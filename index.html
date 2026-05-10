@@ -32,25 +32,48 @@
     --blue:#B5D4F4;--blue-bg:#042C53;--blue-mid:#378ADD;
   }
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh;}
-.app{max-width:430px;margin:0 auto;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh;overflow:hidden;}
+.app{max-width:430px;margin:0 auto;background:var(--bg);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative;}
 
 /* Header */
-.hdr{padding:52px 20px 12px;background:var(--bg);}
+.hdr{padding:52px 20px 12px;background:var(--bg);flex-shrink:0;}
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
 .hdr-title{font-size:22px;font-weight:600;color:var(--text);}
 .hdr-date{font-size:13px;color:var(--text2);}
 .month-sel{font-size:13px;border:1px solid var(--border);background:var(--bg2);color:var(--text);border-radius:8px;padding:5px 10px;outline:none;}
 
-/* Nav */
-.nav{display:flex;background:var(--bg);border-top:1px solid var(--border);position:sticky;bottom:0;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px 8px;border:none;background:none;color:var(--text2);font-size:10px;cursor:pointer;transition:color .15s;}
+/* Nav — fixed to bottom, never moves */
+.nav{display:flex;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);z-index:200;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 2px 8px;border:none;background:none;color:var(--text2);font-size:9px;cursor:pointer;transition:color .15s;}
 .nav-btn.on{color:var(--blue-mid);}
-.nav-btn i{font-size:22px;}
+.nav-btn i{font-size:20px;}
 
-/* Panes */
-.pane{display:none;flex:1;overflow-y:auto;padding:16px 16px 80px;}
+/* Panes — scrollable middle area */
+.pane-wrap{flex:1;overflow:hidden;position:relative;}
+.pane{display:none;position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 20px;}
 .pane.on{display:block;}
+
+/* Calendar */
+.cal-wrap{margin-bottom:12px;}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-nav{background:none;border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);}
+.cal-title{font-size:14px;font-weight:500;color:var(--text);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-dow{font-size:10px;color:var(--text3);text-align:center;padding:4px 0;font-weight:500;}
+.cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:none;background:none;font-size:13px;color:var(--text);position:relative;gap:1px;}
+.cal-day:active{opacity:.7;}
+.cal-day.today{background:var(--blue-bg);color:var(--blue-mid);font-weight:600;}
+.cal-day.selected{background:var(--blue-mid);color:#fff;font-weight:600;}
+.cal-day.has-txn::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--green-mid);position:absolute;bottom:3px;}
+.cal-day.selected.has-txn::after{background:#fff;}
+.cal-day.other-month{color:var(--text3);}
+.cal-day-total{font-size:9px;color:var(--text3);line-height:1;}
+.cal-day.selected .cal-day-total{color:rgba(255,255,255,.8);}
+.cal-day-panel{background:var(--bg2);border-radius:var(--radius);padding:12px;margin-bottom:12px;}
+.cal-day-panel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-day-panel-date{font-size:13px;font-weight:500;color:var(--text);}
+.cal-day-panel-total{font-size:13px;font-weight:600;color:var(--red-mid);}
+
 
 /* Metric cards */
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
@@ -155,6 +178,9 @@ textarea{resize:none;}
       <select class="month-sel" id="month-sel" onchange="refresh()"></select>
     </div>
   </div>
+
+  <!-- Pane wrapper (scrollable area between header and nav) -->
+  <div class="pane-wrap">
 
   <!-- Dashboard -->
   <div id="pane-dash" class="pane on">
@@ -279,6 +305,27 @@ textarea{resize:none;}
     </div>
   </div>
 
+  <!-- Calendar -->
+  <div id="pane-cal" class="pane">
+    <div class="cal-wrap">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="calNav(-1)" aria-label="Previous month"><i class="ti ti-chevron-left"></i></button>
+        <span class="cal-title" id="cal-title"></span>
+        <button class="cal-nav" onclick="calNav(1)" aria-label="Next month"><i class="ti ti-chevron-right"></i></button>
+      </div>
+      <div class="cal-grid" id="cal-dow"></div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div class="cal-day-panel" id="cal-day-panel" style="display:none;">
+      <div class="cal-day-panel-hdr">
+        <span class="cal-day-panel-date" id="cal-panel-date"></span>
+        <span class="cal-day-panel-total" id="cal-panel-total"></span>
+      </div>
+      <div id="cal-panel-txns"></div>
+      <button class="btn btn-primary" style="margin-top:10px;" onclick="openAddForDate()"><i class="ti ti-plus"></i> Add for this date</button>
+    </div>
+  </div>
+
   <!-- Backup & Export -->
   <div id="pane-backup" class="pane">
 
@@ -343,6 +390,8 @@ textarea{resize:none;}
 
   </div>
 
+  </div><!-- /pane-wrap -->
+
   <!-- Bottom nav -->
   <nav class="nav">
     <button class="nav-btn on" onclick="gotoPane('dash',this)" aria-label="Dashboard">
@@ -352,6 +401,10 @@ textarea{resize:none;}
     <button class="nav-btn" onclick="gotoPane('add',this)" aria-label="Add transaction">
       <i class="ti ti-circle-plus"></i>
       <span>Add</span>
+    </button>
+    <button class="nav-btn" onclick="gotoPane('cal',this)" aria-label="Calendar">
+      <i class="ti ti-calendar"></i>
+      <span>Calendar</span>
     </button>
     <button class="nav-btn" onclick="gotoPane('txns',this)" aria-label="Transactions">
       <i class="ti ti-list"></i>
@@ -535,7 +588,7 @@ function addTxn(desc,amount,category,type,date){
 }
 function deleteTxn(id){
   txns=txns.filter(t=>t.id!==id);
-  save();refresh();toast('Deleted');
+  save();refresh();renderCal();toast('Deleted');
 }
 
 function quickAdd(){
@@ -552,6 +605,9 @@ function quickAdd(){
   gotoPane('dash',document.querySelector('.nav-btn'));
 }
 
+// ── AI header fix ──
+const AI_HEADERS={'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+
 async function parseNL(){
   const raw=document.getElementById('nl-input').value.trim();
   if(!raw){toast('Type something first');return;}
@@ -559,9 +615,9 @@ async function parseNL(){
   btn.disabled=true;btn.innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Parsing...';
   const res_el=document.getElementById('nl-result');res_el.textContent='';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:AI_HEADERS,body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:600,
-      system:`Parse natural language transactions into JSON. Today is ${todayStr}. Return ONLY a JSON array, no markdown, no extra text. Each item must have: desc (string), amount (positive number), category (one of: Food,Housing,Transport,Health,Entertainment,Shopping,Education,Utilities,Income,Other), type ("expense" or "income"), date (YYYY-MM-DD, default today if not mentioned).`,
+      system:`Parse natural language transactions into JSON. Today is ${todayStr}. Return ONLY a JSON array, no markdown, no extra text. Each item: desc (string), amount (positive number), category (one of: Food,Housing,Transport,Health,Entertainment,Shopping,Education,Utilities,Income,Other), type ("expense" or "income"), date (YYYY-MM-DD, default today if not mentioned).`,
       messages:[{role:'user',content:raw}]
     })});
     const data=await res.json();
@@ -608,24 +664,132 @@ async function askAI(q){
   mT.filter(t=>t.type==='expense').forEach(t=>{catSpend[t.category]=(catSpend[t.category]||0)+t.amount;});
   const ctx=`You are a personal finance advisor for an Indian user (Kerala). Month: ${mo}. Income: ₹${mInc}, Expenses: ₹${mSpent}, Net: ₹${mInc-mSpent}. Category expenses: ${Object.entries(catSpend).map(([k,v])=>k+' ₹'+v).join(', ')||'none'}. Budgets set: ${Object.entries(budgets).map(([k,v])=>k+' ₹'+v).join(', ')}. Recent transactions: ${mT.slice(-12).map(t=>t.date+' '+t.desc+' '+t.type+' ₹'+t.amount).join('; ')||'none'}. Be concise, practical, specific to their numbers. Use ₹ symbol.`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,system:ctx,messages:[{role:'user',content:q}]})});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:AI_HEADERS,body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,system:ctx,messages:[{role:'user',content:q}]})});
     const data=await res.json();
     const txt=data.content?.find(b=>b.type==='text')?.text||'No response.';
     el.innerHTML=txt.replace(/\n/g,'<br>');
-  }catch(e){el.innerHTML='<span style="color:var(--red-mid);">Error. Check your connection and try again.</span>';}
+  }catch(e){el.innerHTML='<span style="color:var(--red-mid);">Could not reach AI. Make sure you are logged in to Claude.ai.</span>';}
 }
 function doAsk(){askAI(document.getElementById('ai-q').value);}
 
+// ── Calendar ──
+let calYear=today.getFullYear(),calMonth=today.getMonth();
+let calSelected=todayStr;
+
+function calNav(dir){
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCal();
+}
+
+function renderCal(){
+  const DAYS=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  document.getElementById('cal-dow').innerHTML=DAYS.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth,0).getDate();
+  const mo=`${calYear}-${String(calMonth+1).padStart(2,'0')}`;
+
+  document.getElementById('cal-title').textContent=new Date(calYear,calMonth,1).toLocaleString('en-IN',{month:'long',year:'numeric'});
+
+  // Build daily spend map
+  const daySpend={};
+  txns.filter(t=>t.date.startsWith(mo)).forEach(t=>{
+    const d=t.date.split('-')[2];
+    if(!daySpend[d])daySpend[d]={exp:0,inc:0};
+    t.type==='expense'?daySpend[d].exp+=t.amount:daySpend[d].inc+=t.amount;
+  });
+
+  let cells=[];
+  // prev month padding
+  for(let i=firstDay-1;i>=0;i--)cells.push({day:daysInPrev-i,cur:false});
+  // current month
+  for(let d=1;d<=daysInMonth;d++)cells.push({day:d,cur:true});
+  // next month padding
+  while(cells.length%7!==0)cells.push({day:cells.length-daysInMonth-firstDay+1,cur:false});
+
+  document.getElementById('cal-grid').innerHTML=cells.map(c=>{
+    if(!c.cur)return`<div class="cal-day other-month"><span>${c.day}</span></div>`;
+    const ds=String(c.day).padStart(2,'0');
+    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${ds}`;
+    const sp=daySpend[ds];
+    const isToday=dateStr===todayStr;
+    const isSel=dateStr===calSelected;
+    const hasTxn=!!sp;
+    const cls=['cal-day',isToday&&!isSel?'today':'',isSel?'selected':'',hasTxn?'has-txn':'',dateStr>todayStr?'other-month':''].filter(Boolean).join(' ');
+    const subTxt=sp?`<span class="cal-day-total">${sp.exp?'−₹'+Math.round(sp.exp/100)+'k':sp.inc?'+':''}</span>`:'';
+    return`<button class="${cls}" onclick="calSelectDay('${dateStr}')" aria-label="${dateStr}"><span>${c.day}</span>${subTxt}</button>`;
+  }).join('');
+
+  calShowPanel(calSelected);
+}
+
+function calSelectDay(dateStr){
+  calSelected=dateStr;
+  renderCal();
+}
+
+function calShowPanel(dateStr){
+  const panel=document.getElementById('cal-day-panel');
+  const d=new Date(dateStr+'T00:00');
+  const label=d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('cal-panel-date').textContent=label;
+
+  const dayTxns=txns.filter(t=>t.date===dateStr);
+  const totalExp=dayTxns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const totalInc=dayTxns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+
+  const totEl=document.getElementById('cal-panel-total');
+  if(totalExp||totalInc){
+    totEl.textContent=(totalExp?'−₹'+Math.round(totalExp).toLocaleString('en-IN'):'')+(totalExp&&totalInc?' · ':'')+(totalInc?'+₹'+Math.round(totalInc).toLocaleString('en-IN'):'');
+    totEl.style.color=totalExp?'var(--red-mid)':'var(--green-mid)';
+  } else {totEl.textContent='No transactions';}
+
+  const txEl=document.getElementById('cal-panel-txns');
+  if(!dayTxns.length){txEl.innerHTML='<div style="font-size:13px;color:var(--text3);padding:4px 0;">Tap below to add for this date</div>';}
+  else{
+    txEl.innerHTML=dayTxns.map(t=>{
+      const col=t.type==='income'?'var(--green-mid)':'var(--red-mid)';
+      const c=CAT_COLORS[t.category]||'#888';
+      return`<div class="tx-row" style="padding:7px 0;">
+        <div class="tx-icon" style="background:${c}22;color:${c};width:30px;height:30px;border-radius:8px;font-size:15px;"><i class="ti ${CAT_ICONS[t.category]||'ti-tag'}"></i></div>
+        <div><div style="font-size:13px;">${t.desc}</div><div style="font-size:11px;color:var(--text2);">${t.category}</div></div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:13px;font-weight:600;color:${col};">${t.type==='income'?'+':'−'}₹${Math.round(t.amount).toLocaleString('en-IN')}</span>
+          <button class="del-btn" onclick="deleteTxn('${t.id}')" aria-label="Delete"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  panel.style.display='block';
+}
+
+function openAddForDate(){
+  document.getElementById('q-date').value=calSelected;
+  gotoPane('add',null);
+  document.querySelectorAll('.nav-btn')[1].classList.add('on');
+  document.getElementById('q-desc').focus();
+}
+
+// ── Navigation ──
 function gotoPane(name,btn){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
   document.getElementById('pane-'+name).classList.add('on');
   if(btn){
     const all=document.querySelectorAll('.nav-btn');
-    const map={dash:0,add:1,txns:2,budget:3,ai:4,backup:5};
+    const map={dash:0,add:1,cal:2,txns:3,budget:4,ai:5,backup:6};
     all[map[name]]?.classList.add('on');
   }
   if(name==='backup')renderBackupPane();
+  if(name==='cal'){
+    // sync calendar month to currently selected month
+    const mo=selMonth().split('-');
+    calYear=+mo[0];calMonth=+mo[1]-1;
+    renderCal();
+  }
 }
 
 function exportData(){
@@ -788,6 +952,7 @@ styleEl.textContent='@keyframes spin{to{transform:rotate(360deg)}}';
 document.head.appendChild(styleEl);
 document.getElementById('q-date').value=todayStr;
 refresh();
+renderCal();
 checkAutoBackupReminder();
 </script>
 </body>
