@@ -409,7 +409,7 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
 // Each user's data goes into THEIR OWN Google Drive Sheet.
 // You (the app owner) cannot access anyone else's data.
 // ══════════════════════════════════════════════════════
-const GSHEETS_CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
+const GSHEETS_CLIENT_ID = '523623917519-a3kemrsonivdabht136jkb4tdt5mji7e.apps.googleusercontent.com';
 const GSHEETS_SCOPE = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets';
 
 // ── Category maps ──
@@ -768,7 +768,7 @@ function checkAutoBackup(){
 
 function updateAuthCard(user){
   const card=document.getElementById('auth-card');
-  const isConfigured=GSHEETS_CLIENT_ID!=='YOUR_CLIENT_ID.apps.googleusercontent.com';
+  const isConfigured=GSHEETS_CLIENT_ID!=='523623917519-a3kemrsonivdabht136jkb4tdt5mji7e.apps.googleusercontent.com';
   if(user){
     const ph=user.photo?`<img src="${user.photo}" class="av" alt=""/>`:`<div class="av-ph"><i class="ti ti-user" aria-hidden="true"></i></div>`;
     card.innerHTML=`${ph}
@@ -846,7 +846,7 @@ async function gsPushAll(){
 function gsQueuePush(){if(!gsUser||!gsSheetId)return;clearTimeout(gsPushTimer);gsPushTimer=setTimeout(gsPushAll,1800);}
 
 function gsSignIn(){
-  if(GSHEETS_CLIENT_ID==='YOUR_CLIENT_ID.apps.googleusercontent.com'){go('backup',6);toast('Add your Client ID first — see setup card',3500);return;}
+  if(GSHEETS_CLIENT_ID==='523623917519-a3kemrsonivdabht136jkb4tdt5mji7e.apps.googleusercontent.com'){go('backup',6);toast('Add your Client ID first — see setup card',3500);return;}
   const client=google.accounts.oauth2.initTokenClient({
     client_id:GSHEETS_CLIENT_ID,scope:GSHEETS_SCOPE,
     callback:async resp=>{
@@ -879,7 +879,7 @@ function gsRestoreSession(){
   const sid=localStorage.getItem(`mm_${gsUser.email}_sheetId`);if(sid)gsSheetId=sid;
   lsLoad(); // load this user's local cache while we refresh token
   updateAuthCard(gsUser);refresh();renderCal();
-  if(GSHEETS_CLIENT_ID==='YOUR_CLIENT_ID.apps.googleusercontent.com')return;
+  if(GSHEETS_CLIENT_ID==='523623917519-a3kemrsonivdabht136jkb4tdt5mji7e.apps.googleusercontent.com')return;
   try{
     const client=google.accounts.oauth2.initTokenClient({
       client_id:GSHEETS_CLIENT_ID,scope:GSHEETS_SCOPE,prompt:'',
@@ -892,7 +892,7 @@ function gsRestoreSession(){
 // ── Boot ──
 (function boot(){
   autoBackup=JSON.parse(localStorage.getItem('mm_autobackup')||'false');
-  if(GSHEETS_CLIENT_ID!=='YOUR_CLIENT_ID.apps.googleusercontent.com'){const sc=document.getElementById('setup-card');if(sc)sc.style.display='none';}
+  if(GSHEETS_CLIENT_ID!=='523623917519-a3kemrsonivdabht136jkb4tdt5mji7e.apps.googleusercontent.com'){const sc=document.getElementById('setup-card');if(sc)sc.style.display='none';}
   lsLoad();
   document.getElementById('q-date').value=TSTR;
   updateAuthCard(null);setSyncInd('local');
