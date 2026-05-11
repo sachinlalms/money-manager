@@ -2,958 +2,904 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Money Manager"/>
-<meta name="theme-color" content="#ffffff"/>
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme:light)"/>
+<meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme:dark)"/>
 <title>Money Manager</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --bg:#ffffff;--bg2:#f7f7f5;--bg3:#f0efe9;
-  --text:#1a1a1a;--text2:#666;--text3:#999;
-  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);
-  --green:#27500A;--green-bg:#EAF3DE;--green-mid:#639922;
-  --red:#A32D2D;--red-bg:#FCEBEB;--red-mid:#E24B4A;
-  --blue:#185FA5;--blue-bg:#E6F1FB;--blue-mid:#378ADD;
-  --radius:12px;--radius-sm:8px;
+  --bg:#fff;--bg2:#f7f7f5;--bg3:#efefed;
+  --text:#1a1a1a;--text2:#666;--text3:#aaa;
+  --border:rgba(0,0,0,.09);--border2:rgba(0,0,0,.16);
+  --green-bg:#e6f4ea;--green:#1e7e34;--green-mid:#2e9c47;
+  --red-bg:#fce8e6;--red:#c5221f;--red-mid:#e53935;
+  --blue-bg:#e8f0fe;--blue:#1557a0;--blue-mid:#1a73e8;
+  --amber:#f9ab00;--r:12px;--rs:8px;
 }
-@media(prefers-color-scheme:dark){
-  :root{
-    --bg:#1c1c1e;--bg2:#2c2c2e;--bg3:#3a3a3c;
-    --text:#f5f5f5;--text2:#aaa;--text3:#666;
-    --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
-    --green:#9FE1CB;--green-bg:#085041;--green-mid:#1D9E75;
-    --red:#F7C1C1;--red-bg:#501313;--red-mid:#E24B4A;
-    --blue:#B5D4F4;--blue-bg:#042C53;--blue-mid:#378ADD;
-  }
-}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh;overflow:hidden;}
-.app{max-width:430px;margin:0 auto;background:var(--bg);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1e;--bg2:#2c2c2e;--bg3:#3a3a3c;
+  --text:#f2f2f7;--text2:#aeaeb2;--text3:#636366;
+  --border:rgba(255,255,255,.1);--border2:rgba(255,255,255,.2);
+  --green-bg:#0d3320;--green:#30d158;--green-mid:#30d158;
+  --red-bg:#3a1212;--red:#ff6b6b;--red-mid:#ff453a;
+  --blue-bg:#0a2a52;--blue:#64a8ff;--blue-mid:#0a84ff;
+}}
+html,body{height:100%;overflow:hidden;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);}
+#app{max-width:430px;margin:0 auto;background:var(--bg);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
 
 /* Header */
-.hdr{padding:52px 20px 12px;background:var(--bg);flex-shrink:0;}
-.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
-.hdr-title{font-size:22px;font-weight:600;color:var(--text);}
-.hdr-date{font-size:13px;color:var(--text2);}
-.month-sel{font-size:13px;border:1px solid var(--border);background:var(--bg2);color:var(--text);border-radius:8px;padding:5px 10px;outline:none;}
+#hdr{flex-shrink:0;padding:env(safe-area-inset-top,44px) 16px 10px;background:var(--bg);border-bottom:1px solid var(--border);}
+.hdr-row{display:flex;align-items:center;justify-content:space-between;}
+.hdr-title{font-size:20px;font-weight:700;letter-spacing:-.3px;}
+.hdr-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+.month-sel{font-size:13px;font-weight:500;border:1px solid var(--border);background:var(--bg2);color:var(--text);border-radius:var(--rs);padding:5px 10px;outline:none;-webkit-appearance:none;}
+.sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;background:var(--text3);transition:background .3s;}
+.sync-dot.live{background:var(--green-mid);}
+.sync-dot.busy{background:var(--amber);}
+#sync-ind{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:2px;}
 
-/* Nav — fixed to bottom, never moves */
-.nav{display:flex;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);z-index:200;}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 2px 8px;border:none;background:none;color:var(--text2);font-size:9px;cursor:pointer;transition:color .15s;}
-.nav-btn.on{color:var(--blue-mid);}
-.nav-btn i{font-size:20px;}
-
-/* Panes — scrollable middle area */
-.pane-wrap{flex:1;overflow:hidden;position:relative;}
-.pane{display:none;position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 20px;}
+/* Pane wrap — middle scrollable region */
+#pw{flex:1;overflow:hidden;position:relative;}
+.pane{display:none;position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px 20px;}
 .pane.on{display:block;}
 
-/* Calendar */
-.cal-wrap{margin-bottom:12px;}
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.cal-nav{background:none;border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);}
-.cal-title{font-size:14px;font-weight:500;color:var(--text);}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
-.cal-dow{font-size:10px;color:var(--text3);text-align:center;padding:4px 0;font-weight:500;}
-.cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:none;background:none;font-size:13px;color:var(--text);position:relative;gap:1px;}
-.cal-day:active{opacity:.7;}
-.cal-day.today{background:var(--blue-bg);color:var(--blue-mid);font-weight:600;}
-.cal-day.selected{background:var(--blue-mid);color:#fff;font-weight:600;}
-.cal-day.has-txn::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--green-mid);position:absolute;bottom:3px;}
-.cal-day.selected.has-txn::after{background:#fff;}
-.cal-day.other-month{color:var(--text3);}
-.cal-day-total{font-size:9px;color:var(--text3);line-height:1;}
-.cal-day.selected .cal-day-total{color:rgba(255,255,255,.8);}
-.cal-day-panel{background:var(--bg2);border-radius:var(--radius);padding:12px;margin-bottom:12px;}
-.cal-day-panel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.cal-day-panel-date{font-size:13px;font-weight:500;color:var(--text);}
-.cal-day-panel-total{font-size:13px;font-weight:600;color:var(--red-mid);}
-
-
-/* Metric cards */
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-.mcard{background:var(--bg2);border-radius:var(--radius-sm);padding:12px;}
-.mcard-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
-.mcard-val{font-size:18px;font-weight:600;color:var(--text);}
-.mcard-sub{font-size:10px;color:var(--text3);margin-top:3px;}
+/* Nav */
+#nav{display:flex;flex-shrink:0;background:var(--bg);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom,0px);}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 1px 7px;border:none;background:none;color:var(--text3);font-size:8px;font-weight:600;cursor:pointer;letter-spacing:.03em;transition:color .15s;}
+.nb i{font-size:21px;line-height:1;}
+.nb.on{color:var(--blue-mid);}
 
 /* Cards */
-.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
-.card-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;}
+.card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+
+/* Metrics */
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.mc{background:var(--bg2);border-radius:var(--rs);padding:11px 10px;}
+.mc-l{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.mc-v{font-size:17px;font-weight:800;color:var(--text);line-height:1.1;}
+.mc-s{font-size:10px;color:var(--text3);margin-top:3px;}
 
 /* Progress */
-.prog-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
-.prog-fill{height:5px;border-radius:3px;transition:width .4s;}
+.prog{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.pf{height:6px;border-radius:3px;transition:width .4s;}
 
-/* Category rows */
-.cat-row{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);}
-.cat-row:last-child{border:none;}
-.cat-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+/* Transaction row */
+.tx{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.tx:last-child{border:none;}
+.tx-ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.tx-d{font-size:14px;font-weight:500;color:var(--text);line-height:1.2;}
+.tx-m{font-size:11px;color:var(--text3);margin-top:1px;}
+.tx-a{font-size:14px;font-weight:700;white-space:nowrap;}
+.tx-del{background:none;border:none;color:var(--text3);cursor:pointer;padding:3px;font-size:15px;display:block;margin-top:2px;}
+.tx-del:active{color:var(--red-mid);}
 
-/* Transaction rows */
-.tx-row{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
-.tx-row:last-child{border:none;}
-.tx-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
-
-/* Forms */
-input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--bg2);color:var(--text);outline:none;font-family:inherit;}
-input:focus,select:focus,textarea:focus{border-color:var(--blue-mid);}
-textarea{resize:none;}
-.form-row{display:grid;gap:10px;margin-bottom:10px;}
-.form-row-2{grid-template-columns:1fr 1fr;}
-.form-row-3{grid-template-columns:1fr 1fr 1fr;}
-
-/* Buttons */
-.btn{width:100%;padding:13px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:15px;font-weight:500;background:var(--bg2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s;}
-.btn:active{opacity:.7;}
-.btn-primary{background:var(--blue-mid);color:#fff;border-color:var(--blue-mid);}
-.btn-sm{width:auto;padding:5px 10px;font-size:12px;border-radius:6px;}
-
-/* Pills */
-.pill{font-size:11px;padding:3px 8px;border-radius:10px;font-weight:500;}
-.pill-inc{background:var(--green-bg);color:var(--green);}
-.pill-exp{background:var(--red-bg);color:var(--red);}
-
-/* Quick buttons */
-.quick-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
-.qbtn{padding:7px 12px;border:1px solid var(--border);border-radius:20px;font-size:13px;background:var(--bg2);color:var(--text2);cursor:pointer;}
-.qbtn:active{opacity:.7;}
-
-/* AI output */
-.ai-out{background:var(--bg2);border-radius:var(--radius);padding:14px;font-size:14px;line-height:1.7;color:var(--text);margin-bottom:12px;min-height:80px;}
-
-/* Empty state */
-.empty{text-align:center;padding:40px 20px;color:var(--text3);}
-.empty i{font-size:40px;margin-bottom:8px;display:block;}
-
-/* Toast */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .2s;white-space:nowrap;}
-.toast.show{opacity:1;}
-
-/* Search bar */
-.search-row{display:flex;gap:8px;margin-bottom:12px;}
-.search-row input{flex:1;}
-.search-row select{flex:0 0 130px;}
+/* Cat row */
+.cr{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);}
+.cr:last-child{border:none;}
+.cr-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
 
 /* Budget row */
-.budget-row{display:grid;grid-template-columns:28px 1fr 110px;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
-.budget-row:last-child{border:none;}
+.bdr{display:grid;grid-template-columns:34px 1fr 110px;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.bdr:last-child{border:none;}
 
-/* Section label */
-.sec-lbl{font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px;}
+/* Forms */
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:15px;background:var(--bg2);color:var(--text);outline:none;font-family:inherit;-webkit-appearance:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(26,115,232,.13);}
+textarea{resize:none;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.fg{margin-bottom:10px;}
 
-/* Delete btn */
-.del-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;font-size:16px;}
-.del-btn:active{color:var(--red-mid);}
+/* Buttons */
+.btn{width:100%;padding:13px;border:1px solid var(--border2);border-radius:var(--rs);font-size:15px;font-weight:600;background:var(--bg2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s;}
+.btn:active{opacity:.7;}
+.btn-p{background:var(--blue-mid);color:#fff;border-color:var(--blue-mid);}
+.btn-danger{background:var(--red-mid);color:#fff;border-color:var(--red-mid);}
+.btn-g{background:#fff;color:#3c4043;border:1px solid #dadce0;font-size:14px;font-weight:500;}
+.btn-g img{width:18px;height:18px;}
+.btn-sm{width:auto;padding:7px 13px;font-size:13px;}
 
-/* Backup pane */
+/* Banner */
+.banner{display:flex;align-items:center;gap:10px;background:var(--blue-bg);border:1px solid var(--blue-mid);border-radius:var(--rs);padding:11px 13px;margin-bottom:12px;}
+.banner i{font-size:20px;color:var(--blue-mid);flex-shrink:0;}
+.banner-text{flex:1;font-size:13px;color:var(--text);}
+.banner-text b{color:var(--blue-mid);}
+.bnr-btn{background:var(--blue-mid);color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+
+/* Auth card */
+.auth-card{display:flex;align-items:center;gap:12px;background:var(--bg2);border-radius:var(--r);padding:14px;margin-bottom:12px;}
+.av{width:42px;height:42px;border-radius:50%;flex-shrink:0;object-fit:cover;}
+.av-ph{width:42px;height:42px;border-radius:50%;background:var(--blue-mid);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0;}
+.au-name{font-size:14px;font-weight:600;color:var(--text);}
+.au-email{font-size:12px;color:var(--text2);margin-top:1px;}
+.au-status{font-size:11px;margin-top:3px;}
+.au-status.live{color:var(--green-mid);}
+.au-status.local{color:var(--text3);}
+
+/* Sheet link row */
+.sheet-row{display:flex;align-items:center;gap:10px;background:var(--green-bg);border:1px solid var(--green-mid);border-radius:var(--rs);padding:10px 13px;margin-bottom:12px;}
+.sheet-row i{color:var(--green-mid);font-size:18px;flex-shrink:0;}
+.sheet-row a{color:var(--green-mid);font-weight:600;font-size:13px;text-decoration:none;margin-left:auto;white-space:nowrap;}
+
+/* Calendar */
+.cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-nav{background:none;border:1px solid var(--border);border-radius:var(--rs);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);}
+.cal-mo{font-size:15px;font-weight:700;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
+.dow{font-size:10px;font-weight:700;color:var(--text3);text-align:center;padding:4px 0;}
+.cd{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:none;background:none;font-size:13px;color:var(--text);cursor:pointer;position:relative;gap:1px;padding:0;}
+.cd:active{opacity:.7;}
+.cd.tod{background:var(--blue-bg);color:var(--blue-mid);font-weight:700;}
+.cd.sel{background:var(--blue-mid);color:#fff;font-weight:700;}
+.cd.dim{color:var(--text3);pointer-events:none;}
+.cd.has::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--green-mid);position:absolute;bottom:2px;}
+.cd.sel.has::after{background:rgba(255,255,255,.8);}
+.cd-sub{font-size:9px;color:var(--text3);}
+.cd.sel .cd-sub{color:rgba(255,255,255,.7);}
+.cal-panel{background:var(--bg2);border-radius:var(--r);padding:12px;margin-top:8px;}
+.cal-ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+
+/* Toggle */
+.tog{width:44px;height:26px;border-radius:13px;background:var(--border2);border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.tog.on{background:var(--blue-mid);}
+.tog::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.tog.on::after{transform:translateX(18px);}
+
+/* Backup */
 .bk-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
 .bk-row:last-child{border:none;}
-.bk-label{font-size:14px;color:var(--text);}
-.bk-sub{font-size:11px;color:var(--text3);margin-top:2px;}
-.toggle{width:44px;height:26px;background:var(--border2);border-radius:13px;position:relative;cursor:pointer;border:none;transition:background .2s;flex-shrink:0;}
-.toggle.on{background:var(--blue-mid);}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;}
-.toggle.on::after{transform:translateX(18px);}
-.backup-log{max-height:160px;overflow-y:auto;font-size:12px;color:var(--text2);}
-.backup-log-row{padding:5px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
-.backup-log-row:last-child{border:none;}
+.bk-l{font-size:14px;color:var(--text);}
+.bk-s{font-size:11px;color:var(--text3);margin-top:2px;}
+.bk-log{max-height:140px;overflow-y:auto;}
+.bk-log-r{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);}
+.bk-log-r:last-child{border:none;}
+
+/* AI */
+.qbtns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.qbtn{padding:8px 13px;border:1px solid var(--border);border-radius:20px;font-size:13px;background:var(--bg2);color:var(--text2);cursor:pointer;font-weight:500;}
+.qbtn:active{opacity:.7;}
+.ai-out{background:var(--bg2);border-radius:var(--r);padding:14px;font-size:14px;line-height:1.75;color:var(--text);margin-bottom:12px;min-height:80px;}
+
+/* Misc */
+.empty{text-align:center;padding:28px 16px;color:var(--text3);}
+.empty i{font-size:34px;display:block;margin-bottom:8px;}
+.sec{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px;}
+.toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 68px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:opacity .2s;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;}
+code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font-family:monospace;}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
-<div class="app">
+<div id="app">
 
-  <!-- Header -->
-  <div class="hdr">
-    <div class="hdr-top">
-      <div>
-        <div class="hdr-title">Money Manager</div>
-        <div class="hdr-date" id="hdr-date"></div>
-      </div>
+<!-- HEADER -->
+<div id="hdr">
+  <div class="hdr-row">
+    <div>
+      <div class="hdr-title">💰 Money Manager</div>
+      <div class="hdr-sub" id="hdr-sub"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div id="sync-ind"><span class="sync-dot" id="sdot"></span><span id="slbl">Local</span></div>
       <select class="month-sel" id="month-sel" onchange="refresh()"></select>
     </div>
   </div>
+</div>
 
-  <!-- Pane wrapper (scrollable area between header and nav) -->
-  <div class="pane-wrap">
+<!-- PANE WRAPPER -->
+<div id="pw">
 
-  <!-- Dashboard -->
-  <div id="pane-dash" class="pane on">
-    <div class="metrics">
-      <div class="mcard">
-        <div class="mcard-lbl">Today</div>
-        <div class="mcard-val" id="d-today">₹0</div>
-        <div class="mcard-sub" id="d-today-c">0 items</div>
-      </div>
-      <div class="mcard">
-        <div class="mcard-lbl">This month</div>
-        <div class="mcard-val" id="d-mspent">₹0</div>
-        <div class="mcard-sub" id="d-brem">—</div>
-      </div>
-      <div class="mcard">
-        <div class="mcard-lbl">Income</div>
-        <div class="mcard-val" id="d-inc" style="color:var(--green-mid);">₹0</div>
-        <div class="mcard-sub" id="d-net">Net ₹0</div>
-      </div>
+<!-- Dashboard -->
+<div id="p-dash" class="pane on">
+  <div id="sync-banner" class="banner" style="display:none;">
+    <i class="ti ti-cloud" aria-hidden="true"></i>
+    <span class="banner-text">Sign in with Google to <b>sync across all your devices</b> — data saved privately in your own Google Drive</span>
+    <button class="bnr-btn" onclick="gsSignIn()">Sign in</button>
+  </div>
+  <div class="metrics">
+    <div class="mc"><div class="mc-l">Today</div><div class="mc-v" id="d-today">₹0</div><div class="mc-s" id="d-today-c">0 items</div></div>
+    <div class="mc"><div class="mc-l">Month spent</div><div class="mc-v" id="d-spent">₹0</div><div class="mc-s" id="d-brem">—</div></div>
+    <div class="mc"><div class="mc-l">Income</div><div class="mc-v" id="d-inc" style="color:var(--green-mid);">₹0</div><div class="mc-s" id="d-net">Net ₹0</div></div>
+  </div>
+  <div class="card" style="padding:12px 14px;">
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+      <span style="font-size:13px;font-weight:600;">Budget used</span>
+      <span style="font-size:12px;color:var(--text2);" id="bpct">0%</span>
     </div>
+    <div class="prog"><div class="pf" id="overall-bar" style="width:0%;background:var(--blue-mid);"></div></div>
+  </div>
+  <div class="sec">Categories this month</div>
+  <div class="card" style="padding:10px 14px;"><div id="cat-list"><div class="empty" style="padding:10px 0;"><i class="ti ti-chart-pie-2"></i>No expenses yet</div></div></div>
+  <div class="sec">Today's activity</div>
+  <div class="card" style="padding:10px 14px;"><div id="today-list"><div class="empty" style="padding:10px 0;"><i class="ti ti-receipt"></i>Nothing added today</div></div></div>
+</div>
 
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-size:13px;font-weight:500;">Budget used</span>
-        <span style="font-size:12px;color:var(--text2);" id="budget-pct-lbl">0%</span>
-      </div>
-      <div class="prog-bg" style="height:8px;border-radius:4px;">
-        <div class="prog-fill" id="overall-bar" style="width:0%;background:var(--blue-mid);height:8px;border-radius:4px;"></div>
-      </div>
+<!-- Add -->
+<div id="p-add" class="pane">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-bolt" style="color:var(--blue-mid);"></i>Quick add</div>
+    <div class="fg"><input id="q-desc" type="text" placeholder="Description (e.g. Lunch, Rent, Salary)"/></div>
+    <div class="fg row2"><input id="q-amt" type="number" inputmode="decimal" placeholder="Amount ₹"/><select id="q-type"><option value="expense">Expense</option><option value="income">Income</option></select></div>
+    <div class="fg row2">
+      <select id="q-cat"><option>Food</option><option>Housing</option><option>Transport</option><option>Health</option><option>Entertainment</option><option>Shopping</option><option>Education</option><option>Utilities</option><option>Other</option></select>
+      <input id="q-date" type="date"/>
     </div>
+    <button class="btn btn-p" onclick="quickAdd()"><i class="ti ti-plus"></i>Add transaction</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-message-2" style="color:var(--blue-mid);"></i>Natural language (AI)</div>
+    <div class="fg"><textarea id="nl-input" rows="3" placeholder="e.g. Spent 250 on petrol today&#10;Salary 45000 credited 1st May&#10;Coffee 80 at CCD this morning"></textarea></div>
+    <button class="btn" id="nl-btn" onclick="parseNL()"><i class="ti ti-sparkles"></i>Parse &amp; add with AI</button>
+    <div id="nl-res" style="font-size:12px;color:var(--text2);margin-top:8px;text-align:center;min-height:14px;"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-clipboard-list" style="color:var(--blue-mid);"></i>Paste a list (CSV)</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Format: Date, Description, Amount, Type, Category</div>
+    <div class="fg"><textarea id="bulk-input" rows="4" placeholder="2025-05-01,Salary,45000,income,Income&#10;2025-05-02,Rent,12000,expense,Housing"></textarea></div>
+    <button class="btn" onclick="bulkAdd()"><i class="ti ti-file-import"></i>Import list</button>
+    <div id="bulk-res" style="font-size:12px;color:var(--text2);margin-top:8px;text-align:center;"></div>
+  </div>
+</div>
 
-    <div class="sec-lbl">Categories this month</div>
-    <div class="card" style="padding:12px 16px;">
-      <div id="cat-breakdown"><div class="empty"><i class="ti ti-chart-pie"></i>No expenses yet</div></div>
+<!-- Calendar -->
+<div id="p-cal" class="pane">
+  <div class="cal-hdr">
+    <button class="cal-nav" onclick="calNav(-1)" aria-label="Previous month"><i class="ti ti-chevron-left"></i></button>
+    <span class="cal-mo" id="cal-title"></span>
+    <button class="cal-nav" onclick="calNav(1)" aria-label="Next month"><i class="ti ti-chevron-right"></i></button>
+  </div>
+  <div class="cal-grid" id="cal-dow"></div>
+  <div class="cal-grid" id="cal-grid"></div>
+  <div id="cal-panel" class="cal-panel" style="display:none;">
+    <div class="cal-ph">
+      <span style="font-size:13px;font-weight:600;" id="cal-p-date"></span>
+      <span style="font-size:13px;font-weight:700;" id="cal-p-total"></span>
     </div>
+    <div id="cal-p-txns"></div>
+    <button class="btn btn-p" style="margin-top:10px;" onclick="addForDate()"><i class="ti ti-plus"></i>Add for this date</button>
+  </div>
+</div>
 
-    <div class="sec-lbl">Today's activity</div>
-    <div class="card" style="padding:12px 16px;">
-      <div id="today-list"><div class="empty" style="padding:16px 0;"><i class="ti ti-receipt"></i>No transactions today</div></div>
+<!-- History -->
+<div id="p-hist" class="pane">
+  <div style="display:flex;gap:8px;margin-bottom:12px;">
+    <input type="search" id="srch" placeholder="Search…" oninput="renderHist()" style="flex:1;"/>
+    <select id="fcat" onchange="renderHist()" style="flex:0 0 120px;">
+      <option value="">All</option>
+      <option>Food</option><option>Housing</option><option>Transport</option><option>Health</option><option>Entertainment</option><option>Shopping</option><option>Education</option><option>Utilities</option><option>Income</option><option>Other</option>
+    </select>
+  </div>
+  <div id="hist-list"></div>
+</div>
+
+<!-- Budget -->
+<div id="p-budget" class="pane">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-target" style="color:var(--blue-mid);"></i>Monthly limits</div>
+    <div id="budget-editor"></div>
+  </div>
+  <div class="sec">Budget vs actual</div>
+  <div class="card"><div style="position:relative;height:250px;"><canvas id="bchart"></canvas></div></div>
+</div>
+
+<!-- AI -->
+<div id="p-ai" class="pane">
+  <div class="qbtns">
+    <button class="qbtn" onclick="askAI('Summarise my spending this month and give 3 practical tips to save more.')">Monthly summary</button>
+    <button class="qbtn" onclick="askAI('Which category am I overspending on? How can I reduce it?')">Overspending?</button>
+    <button class="qbtn" onclick="askAI('What is my savings rate this month? Is it healthy for an Indian family?')">Savings rate</button>
+    <button class="qbtn" onclick="askAI('Suggest a realistic monthly budget based on my income and spending patterns.')">Budget plan</button>
+  </div>
+  <div class="ai-out" id="ai-out"><span style="color:var(--text3);">Add some transactions, then tap a button above — or type your own question below.</span></div>
+  <div style="display:flex;gap:8px;">
+    <input id="ai-q" type="text" placeholder="Ask anything about your money…" onkeydown="if(event.key==='Enter')doAsk();"/>
+    <button class="btn btn-p" style="width:auto;padding:11px 16px;" onclick="doAsk()"><i class="ti ti-send"></i></button>
+  </div>
+</div>
+
+<!-- Sync / Backup -->
+<div id="p-backup" class="pane">
+
+  <!-- Auth card -->
+  <div class="auth-card" id="auth-card">
+    <div class="av-ph"><i class="ti ti-user" aria-hidden="true"></i></div>
+    <div style="flex:1;">
+      <div class="au-name">Not signed in</div>
+      <div class="au-email">Data saved locally only</div>
+      <div class="au-status local">No cloud sync</div>
+    </div>
+    <button class="btn btn-g btn-sm" onclick="gsSignIn()" style="gap:6px;">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"/>Sign in
+    </button>
+  </div>
+
+  <!-- Sheet link (shown after sign-in) -->
+  <div class="sheet-row" id="sheet-row" style="display:none;">
+    <i class="ti ti-table-filled" aria-hidden="true"></i>
+    <span style="font-size:13px;color:var(--text);flex:1;">Syncing to your Google Sheet</span>
+    <a id="sheet-link" href="#" target="_blank">Open Sheet ↗</a>
+  </div>
+
+  <!-- Setup instructions (hidden once Client ID is set) -->
+  <div class="card" id="setup-card">
+    <div class="card-title"><i class="ti ti-settings" style="color:var(--blue-mid);"></i>One-time setup (app owner only)</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:10px;">To enable Google Sign-In for all users of your app:</p>
+    <ol style="font-size:13px;color:var(--text2);line-height:2.2;padding-left:18px;">
+      <li>Go to <a href="https://console.cloud.google.com" target="_blank" style="color:var(--blue-mid);">console.cloud.google.com</a> → New project</li>
+      <li>APIs &amp; Services → Enable <b>Google Sheets API</b> + <b>Google Drive API</b></li>
+      <li>Credentials → OAuth 2.0 Client ID → Web application type</li>
+      <li>Add <code>https://yourusername.github.io</code> to Authorised JavaScript origins</li>
+      <li>Copy Client ID and paste it into <code>GSHEETS_CLIENT_ID</code> in index.html</li>
+    </ol>
+    <p style="font-size:12px;color:var(--text3);margin-top:10px;">Until configured, the app works fully with local storage. Once set up, each user who signs in gets their own private Google Sheet — you cannot access their data.</p>
+  </div>
+
+  <!-- Export -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-download" style="color:var(--blue-mid);"></i>Export to Excel / CSV</div>
+    <div class="fg row2">
+      <select id="exp-scope"><option value="all">All data</option><option value="month">This month</option></select>
+      <select id="exp-fmt"><option value="xlsx">Excel (.xlsx)</option><option value="csv">CSV (.csv)</option></select>
+    </div>
+    <button class="btn btn-p" onclick="exportData()"><i class="ti ti-file-spreadsheet"></i>Download now</button>
+  </div>
+
+  <!-- Import -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-upload" style="color:var(--blue-mid);"></i>Import from Excel / CSV</div>
+    <label style="display:block;border:1.5px dashed var(--border2);border-radius:var(--rs);padding:22px;text-align:center;cursor:pointer;margin-bottom:8px;" for="imp-file">
+      <i class="ti ti-cloud-upload" style="font-size:30px;color:var(--text3);display:block;margin-bottom:6px;" aria-hidden="true"></i>
+      <span style="font-size:13px;color:var(--text2);">Tap to choose file</span>
+      <input type="file" id="imp-file" accept=".xlsx,.xls,.csv" style="display:none;" onchange="importFile(this)"/>
+    </label>
+    <div id="imp-res" style="font-size:13px;color:var(--text2);text-align:center;"></div>
+  </div>
+
+  <!-- Auto backup -->
+  <div class="card">
+    <div class="card-title"><i class="ti ti-clock" style="color:var(--blue-mid);"></i>Daily backup reminder</div>
+    <div class="bk-row">
+      <div><div class="bk-l">Auto-remind</div><div class="bk-s">Prompt to download backup when you open the app</div></div>
+      <button class="tog" id="auto-tog" onclick="toggleAutoBackup()" aria-label="Toggle auto backup"></button>
+    </div>
+    <div class="bk-row">
+      <div><div class="bk-l">Last backup</div><div class="bk-s" id="last-bk">Never</div></div>
+      <button class="btn btn-sm" style="white-space:nowrap;" onclick="exportData()"><i class="ti ti-refresh"></i>Backup now</button>
+    </div>
+    <div style="margin-top:10px;">
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;">History</div>
+      <div class="bk-log" id="bk-log"><div style="color:var(--text3);font-size:12px;padding:6px 0;">No backups yet</div></div>
     </div>
   </div>
 
-  <!-- Add -->
-  <div id="pane-add" class="pane">
-    <div class="card">
-      <div class="card-title"><i class="ti ti-bolt" style="color:var(--blue-mid);"></i> Quick add</div>
-      <div class="form-row"><input id="q-desc" type="text" placeholder="Description (e.g. Lunch at hotel)"/></div>
-      <div class="form-row form-row-2">
-        <input id="q-amt" type="number" inputmode="decimal" placeholder="Amount ₹"/>
-        <select id="q-type"><option value="expense">Expense</option><option value="income">Income</option></select>
-      </div>
-      <div class="form-row form-row-2">
-        <select id="q-cat">
-          <option>Food</option><option>Housing</option><option>Transport</option>
-          <option>Health</option><option>Entertainment</option><option>Shopping</option>
-          <option>Education</option><option>Utilities</option><option>Other</option>
-        </select>
-        <input id="q-date" type="date"/>
-      </div>
-      <button class="btn btn-primary" onclick="quickAdd()"><i class="ti ti-plus"></i> Add transaction</button>
-    </div>
+</div>
+</div><!-- /pw -->
 
-    <div class="card">
-      <div class="card-title"><i class="ti ti-message" style="color:var(--blue-mid);"></i> Natural language</div>
-      <div class="form-row">
-        <textarea id="nl-input" rows="3" placeholder="e.g. Spent 250 on petrol today&#10;Salary 45000 credited on 1st&#10;Coffee 80 at CCD this morning"></textarea>
-      </div>
-      <button class="btn" onclick="parseNL()" id="nl-btn"><i class="ti ti-sparkles"></i> Parse & add with AI</button>
-      <div id="nl-result" style="font-size:12px;color:var(--text2);margin-top:8px;text-align:center;"></div>
-    </div>
+<!-- NAV -->
+<nav id="nav" aria-label="Main navigation">
+  <button class="nb on" onclick="go('dash',0)" aria-label="Home"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Home</button>
+  <button class="nb" onclick="go('add',1)" aria-label="Add"><i class="ti ti-circle-plus" aria-hidden="true"></i>Add</button>
+  <button class="nb" onclick="go('cal',2)" aria-label="Calendar"><i class="ti ti-calendar" aria-hidden="true"></i>Calendar</button>
+  <button class="nb" onclick="go('hist',3)" aria-label="History"><i class="ti ti-list" aria-hidden="true"></i>History</button>
+  <button class="nb" onclick="go('budget',4)" aria-label="Budget"><i class="ti ti-target" aria-hidden="true"></i>Budget</button>
+  <button class="nb" onclick="go('ai',5)" aria-label="AI"><i class="ti ti-sparkles" aria-hidden="true"></i>AI</button>
+  <button class="nb" onclick="go('backup',6)" aria-label="Sync"><i class="ti ti-cloud-upload" aria-hidden="true"></i>Sync</button>
+</nav>
 
-    <div class="card">
-      <div class="card-title"><i class="ti ti-clipboard-list" style="color:var(--blue-mid);"></i> Paste a list (CSV)</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Format: Date, Description, Amount, Type (income/expense), Category</div>
-      <div class="form-row">
-        <textarea id="bulk-input" rows="4" placeholder="2025-05-01,Salary,45000,income,Income&#10;2025-05-02,Rent,12000,expense,Housing&#10;2025-05-03,Groceries,1800,expense,Food"></textarea>
-      </div>
-      <button class="btn" onclick="bulkAdd()"><i class="ti ti-file-import"></i> Import list</button>
-      <div id="bulk-result" style="font-size:12px;color:var(--text2);margin-top:8px;text-align:center;"></div>
-    </div>
-  </div>
-
-  <!-- Transactions -->
-  <div id="pane-txns" class="pane">
-    <div class="search-row">
-      <input type="search" id="search-q" placeholder="Search..." oninput="renderTxns()"/>
-      <select id="filter-cat" onchange="renderTxns()">
-        <option value="">All</option>
-        <option>Food</option><option>Housing</option><option>Transport</option>
-        <option>Health</option><option>Entertainment</option><option>Shopping</option>
-        <option>Education</option><option>Utilities</option><option>Income</option><option>Other</option>
-      </select>
-    </div>
-    <div id="txn-list"></div>
-  </div>
-
-  <!-- Budget -->
-  <div id="pane-budget" class="pane">
-    <div class="card">
-      <div class="card-title"><i class="ti ti-target" style="color:var(--blue-mid);"></i> Monthly limits</div>
-      <div id="budget-editor"></div>
-    </div>
-    <div class="sec-lbl">Budget vs actual</div>
-    <div class="card">
-      <div style="position:relative;height:260px;"><canvas id="budgetChart" role="img" aria-label="Budget vs actual spending by category">Budget comparison chart</canvas></div>
-    </div>
-  </div>
-
-  <!-- AI -->
-  <div id="pane-ai" class="pane">
-    <div class="sec-lbl">Quick insights</div>
-    <div class="quick-btns">
-      <button class="qbtn" onclick="askAI('Summarise my spending this month and give 3 tips to save more.')">Monthly summary</button>
-      <button class="qbtn" onclick="askAI('Which category am I overspending on? How can I reduce it?')">Overspending?</button>
-      <button class="qbtn" onclick="askAI('What is my savings rate this month? Is it healthy for an Indian household?')">Savings rate</button>
-      <button class="qbtn" onclick="askAI('Suggest a realistic monthly budget based on my income and spending.')">Budget plan</button>
-    </div>
-    <div class="ai-out" id="ai-out"><span style="color:var(--text3);">Add transactions and tap a button above, or ask your own question below.</span></div>
-    <div style="display:flex;gap:8px;">
-      <input id="ai-q" type="text" placeholder="Ask anything about your money..." onkeydown="if(event.key==='Enter')doAsk()"/>
-      <button class="btn btn-primary" style="width:auto;padding:11px 16px;white-space:nowrap;" onclick="doAsk()"><i class="ti ti-send"></i></button>
-    </div>
-  </div>
-
-  <!-- Calendar -->
-  <div id="pane-cal" class="pane">
-    <div class="cal-wrap">
-      <div class="cal-header">
-        <button class="cal-nav" onclick="calNav(-1)" aria-label="Previous month"><i class="ti ti-chevron-left"></i></button>
-        <span class="cal-title" id="cal-title"></span>
-        <button class="cal-nav" onclick="calNav(1)" aria-label="Next month"><i class="ti ti-chevron-right"></i></button>
-      </div>
-      <div class="cal-grid" id="cal-dow"></div>
-      <div class="cal-grid" id="cal-grid"></div>
-    </div>
-    <div class="cal-day-panel" id="cal-day-panel" style="display:none;">
-      <div class="cal-day-panel-hdr">
-        <span class="cal-day-panel-date" id="cal-panel-date"></span>
-        <span class="cal-day-panel-total" id="cal-panel-total"></span>
-      </div>
-      <div id="cal-panel-txns"></div>
-      <button class="btn btn-primary" style="margin-top:10px;" onclick="openAddForDate()"><i class="ti ti-plus"></i> Add for this date</button>
-    </div>
-  </div>
-
-  <!-- Backup & Export -->
-  <div id="pane-backup" class="pane">
-
-    <div class="card">
-      <div class="card-title"><i class="ti ti-download" style="color:var(--blue-mid);"></i> Export to Excel</div>
-      <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Download all your transactions as a formatted <strong>.xlsx</strong> file. Open it in Excel, Google Sheets, or Numbers on iPhone.</p>
-      <div class="form-row form-row-2" style="margin-bottom:10px;">
-        <select id="exp-scope" style="font-size:14px;">
-          <option value="all">All data</option>
-          <option value="month">This month only</option>
-        </select>
-        <select id="exp-format" style="font-size:14px;">
-          <option value="xlsx">Excel (.xlsx)</option>
-          <option value="csv">CSV (.csv)</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" onclick="exportData()"><i class="ti ti-file-spreadsheet"></i> Download now</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><i class="ti ti-upload" style="color:var(--blue-mid);"></i> Import from Excel / CSV</div>
-      <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Import a previously exported file or any spreadsheet with columns: <em>Date, Description, Amount, Type, Category</em>.</p>
-      <label style="display:block;border:1.5px dashed var(--border2);border-radius:var(--radius-sm);padding:24px;text-align:center;cursor:pointer;margin-bottom:10px;" for="import-file">
-        <i class="ti ti-cloud-upload" style="font-size:32px;color:var(--text3);display:block;margin-bottom:6px;"></i>
-        <span style="font-size:13px;color:var(--text2);">Tap to choose file</span>
-        <input type="file" id="import-file" accept=".xlsx,.xls,.csv" style="display:none;" onchange="importFile(this)"/>
-      </label>
-      <div id="import-result" style="font-size:13px;color:var(--text2);text-align:center;"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><i class="ti ti-clock" style="color:var(--blue-mid);"></i> Daily auto-backup</div>
-      <div class="bk-row">
-        <div>
-          <div class="bk-label">Auto-backup reminder</div>
-          <div class="bk-sub">Get a prompt to download backup each day you open the app</div>
-        </div>
-        <button class="toggle" id="auto-toggle" onclick="toggleAutoBackup()" aria-label="Toggle auto backup"></button>
-      </div>
-      <div class="bk-row">
-        <div>
-          <div class="bk-label">Last backup</div>
-          <div class="bk-sub" id="last-backup-time">Never</div>
-        </div>
-        <button class="btn" style="width:auto;padding:8px 14px;font-size:13px;" onclick="exportData();recordBackup()"><i class="ti ti-refresh"></i> Backup now</button>
-      </div>
-      <div style="margin-top:12px;">
-        <div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;">Backup history</div>
-        <div class="backup-log" id="backup-log"><div style="color:var(--text3);font-size:12px;padding:8px 0;">No backups yet</div></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><i class="ti ti-info-circle" style="color:var(--blue-mid);"></i> How to use the backup</div>
-      <ol style="font-size:13px;color:var(--text2);line-height:2;padding-left:16px;">
-        <li>Tap <strong>Download now</strong> — saves an Excel file to your iPhone</li>
-        <li>Store it in iCloud Drive, Google Drive, or WhatsApp to yourself</li>
-        <li>To restore: tap <strong>Import from Excel</strong> and select the file</li>
-        <li>Enable <strong>Auto-backup reminder</strong> so you never forget</li>
-      </ol>
-    </div>
-
-  </div>
-
-  </div><!-- /pane-wrap -->
-
-  <!-- Bottom nav -->
-  <nav class="nav">
-    <button class="nav-btn on" onclick="gotoPane('dash',this)" aria-label="Dashboard">
-      <i class="ti ti-layout-dashboard"></i>
-      <span>Home</span>
-    </button>
-    <button class="nav-btn" onclick="gotoPane('add',this)" aria-label="Add transaction">
-      <i class="ti ti-circle-plus"></i>
-      <span>Add</span>
-    </button>
-    <button class="nav-btn" onclick="gotoPane('cal',this)" aria-label="Calendar">
-      <i class="ti ti-calendar"></i>
-      <span>Calendar</span>
-    </button>
-    <button class="nav-btn" onclick="gotoPane('txns',this)" aria-label="Transactions">
-      <i class="ti ti-list"></i>
-      <span>History</span>
-    </button>
-    <button class="nav-btn" onclick="gotoPane('budget',this)" aria-label="Budget">
-      <i class="ti ti-target"></i>
-      <span>Budget</span>
-    </button>
-    <button class="nav-btn" onclick="gotoPane('ai',this)" aria-label="AI analysis">
-      <i class="ti ti-sparkles"></i>
-      <span>AI</span>
-    </button>
-    <button class="nav-btn" onclick="gotoPane('backup',this)" aria-label="Backup">
-      <i class="ti ti-database"></i>
-      <span>Backup</span>
-    </button>
-  </nav>
-
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 </div>
 
 <script>
-const CAT_COLORS={Food:'#EA4335',Housing:'#185FA5',Transport:'#BA7517',Health:'#1D9E75',Entertainment:'#7F77DD',Shopping:'#D4537E',Education:'#378ADD',Utilities:'#888780',Income:'#3B6D11',Other:'#5F5E5A'};
-const CAT_ICONS={Food:'ti-bowl-spoon',Housing:'ti-home',Transport:'ti-car',Health:'ti-heart',Entertainment:'ti-device-tv',Shopping:'ti-shopping-bag',Education:'ti-school',Utilities:'ti-bolt',Income:'ti-coins',Other:'ti-tag'};
+'use strict';
+
+// ══════════════════════════════════════════════════════
+// ★ CONFIGURATION ★
+// Replace with your Client ID from Google Cloud Console.
+// This is safe to commit publicly — it only enables OAuth.
+// Each user's data goes into THEIR OWN Google Drive Sheet.
+// You (the app owner) cannot access anyone else's data.
+// ══════════════════════════════════════════════════════
+const GSHEETS_CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
+const GSHEETS_SCOPE = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets';
+
+// ── Category maps ──
+const CC={Food:'#ea4335',Housing:'#1a73e8',Transport:'#f9ab00',Health:'#1e8e3e',Entertainment:'#8430ce',Shopping:'#d93025',Education:'#4285f4',Utilities:'#5f6368',Income:'#137333',Other:'#80868b'};
+const CI={Food:'ti-bowl-spoon',Housing:'ti-home',Transport:'ti-car',Health:'ti-heart',Entertainment:'ti-device-tv',Shopping:'ti-shopping-bag',Education:'ti-school',Utilities:'ti-bolt',Income:'ti-coins',Other:'ti-tag'};
 const CATS=['Food','Housing','Transport','Health','Entertainment','Shopping','Education','Utilities'];
 
-let txns=JSON.parse(localStorage.getItem('mm_txns')||'[]');
-let budgets=JSON.parse(localStorage.getItem('mm_budgets')||JSON.stringify({Food:5000,Housing:15000,Transport:2000,Health:1500,Entertainment:1000,Shopping:3000,Education:1000,Utilities:2000}));
-let budgetChart=null;
-const today=new Date();
-const todayStr=today.toISOString().split('T')[0];
+// ── App state ──
+const TODAY=new Date();
+const TSTR=TODAY.toISOString().split('T')[0];
+let txns=[], budgets={Food:5000,Housing:15000,Transport:2000,Health:1500,Entertainment:1000,Shopping:3000,Education:1000,Utilities:2000};
+let gsUser=null, gsSheetId=null, gsPushTimer=null, bChart=null;
+let calY=TODAY.getFullYear(), calM=TODAY.getMonth(), calSel=TSTR;
+let autoBackup=false;
 
-function save(){localStorage.setItem('mm_txns',JSON.stringify(txns));localStorage.setItem('mm_budgets',JSON.stringify(budgets));}
-function fmt(n){return'₹'+Math.round(Math.abs(n)).toLocaleString('en-IN');}
-function pct(a,b){return b?Math.min(100,Math.round(a/b*100)):0;}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
-
-function getMonths(){
-  const s=new Set([todayStr.slice(0,7)]);
-  txns.forEach(t=>s.add(t.date.slice(0,7)));
-  return[...s].sort().reverse();
+// ── LocalStorage (namespaced per user so User A ≠ User B) ──
+const lk=k=>gsUser?`mm_${gsUser.email}_${k}`:`mm_anon_${k}`;
+function lsLoad(){
+  txns=JSON.parse(localStorage.getItem(lk('txns'))||'[]');
+  const b=localStorage.getItem(lk('budgets'));
+  if(b)Object.assign(budgets,JSON.parse(b));
 }
-function selMonth(){return document.getElementById('month-sel').value||todayStr.slice(0,7);}
-
-function refreshMonthSel(){
-  const sel=document.getElementById('month-sel');
-  const cur=sel.value||todayStr.slice(0,7);
-  sel.innerHTML=getMonths().map(m=>{
-    const [y,mo]=m.split('-');
-    const lbl=new Date(+y,+mo-1,1).toLocaleString('en-IN',{month:'short',year:'numeric'});
-    return`<option value="${m}"${m===cur?' selected':''}>${lbl}</option>`;
-  }).join('');
+function lsSave(){
+  localStorage.setItem(lk('txns'),JSON.stringify(txns));
+  localStorage.setItem(lk('budgets'),JSON.stringify(budgets));
 }
 
+// ── Utilities ──
+const fmt=n=>'₹'+Math.round(Math.abs(n)).toLocaleString('en-IN');
+const pct=(a,b)=>b?Math.min(100,Math.round(a/b*100)):0;
+function toast(msg,d=2400){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+function setSyncInd(state){
+  const dot=document.getElementById('sdot'),lbl=document.getElementById('slbl');
+  dot.className='sync-dot'+(state==='live'?' live':state==='busy'?' busy':'');
+  lbl.textContent=state==='live'?'Synced':state==='busy'?'Syncing…':'Local only';
+}
+
+// ── Navigation ──
+function go(name,idx){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+name).classList.add('on');
+  document.querySelectorAll('.nb')[idx].classList.add('on');
+  if(name==='cal'){calY=TODAY.getFullYear();calM=TODAY.getMonth();renderCal();}
+  if(name==='backup')renderBackup();
+  if(name==='budget')renderBudget();
+}
+
+// ── Month selector ──
+function getMonths(){const s=new Set([TSTR.slice(0,7)]);txns.forEach(t=>s.add(t.date.slice(0,7)));return[...s].sort().reverse();}
+function sMo(){return document.getElementById('month-sel').value||TSTR.slice(0,7);}
+function refreshSel(){
+  const el=document.getElementById('month-sel'),cur=el.value||TSTR.slice(0,7);
+  el.innerHTML=getMonths().map(m=>{const[y,mo]=m.split('-');return`<option value="${m}"${m===cur?' selected':''}>${new Date(+y,+mo-1,1).toLocaleString('en-IN',{month:'long',year:'numeric'})}</option>`;}).join('');
+}
+
+// ── Main dashboard refresh ──
 function refresh(){
-  refreshMonthSel();
-  const mo=selMonth();
-  const mT=txns.filter(t=>t.date.slice(0,7)===mo);
-  const tT=txns.filter(t=>t.date===todayStr);
+  refreshSel();
+  const mo=sMo(), mT=txns.filter(t=>t.date.slice(0,7)===mo), tT=txns.filter(t=>t.date===TSTR);
   const mSpent=mT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const mInc=mT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const tSpent=tT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const totalB=Object.values(budgets).reduce((a,b)=>a+b,0);
+  const net=mInc-mSpent;
 
   document.getElementById('d-today').textContent=fmt(tSpent);
   document.getElementById('d-today-c').textContent=tT.length+' item'+(tT.length!==1?'s':'');
-  document.getElementById('d-mspent').textContent=fmt(mSpent);
-  document.getElementById('d-brem').textContent=totalB?'₹'+Math.round(Math.max(0,totalB-mSpent)).toLocaleString('en-IN')+' left':'Set budget';
+  document.getElementById('d-spent').textContent=fmt(mSpent);
+  document.getElementById('d-brem').textContent=totalB?fmt(Math.max(0,totalB-mSpent))+' left':'Set a budget';
   document.getElementById('d-inc').textContent=fmt(mInc);
-  document.getElementById('d-net').textContent='Net '+fmt(mInc-mSpent);
+  document.getElementById('d-net').textContent='Net '+(net>=0?'+':'')+fmt(net);
   const op=pct(mSpent,totalB);
-  const bar=document.getElementById('overall-bar');
-  bar.style.width=op+'%';
-  bar.style.background=op>90?'#E24B4A':op>70?'#BA7517':'#378ADD';
-  document.getElementById('budget-pct-lbl').textContent=op+'% used';
+  document.getElementById('overall-bar').style.cssText=`width:${op}%;background:${op>90?'var(--red-mid)':op>70?'var(--amber)':'var(--blue-mid)'};`;
+  document.getElementById('bpct').textContent=op+'% used';
 
-  const catSpend={};
-  mT.filter(t=>t.type==='expense').forEach(t=>{catSpend[t.category]=(catSpend[t.category]||0)+t.amount;});
-  const activeCats=Object.entries(catSpend).sort((a,b)=>b[1]-a[1]);
-  const cb=document.getElementById('cat-breakdown');
-  if(!activeCats.length){cb.innerHTML='<div class="empty" style="padding:16px 0;"><i class="ti ti-chart-pie"></i>No expenses yet</div>';}
-  else{
-    cb.innerHTML=activeCats.map(([c,v])=>{
-      const b=budgets[c]||0;const p=pct(v,b);const col=CAT_COLORS[c]||'#888';const over=b&&v>b;
-      return`<div class="cat-row">
-        <div class="cat-icon" style="background:${col}22;color:${col};"><i class="ti ${CAT_ICONS[c]||'ti-tag'}"></i></div>
-        <div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-            <span style="font-size:13px;">${c}</span>
-            <span style="font-size:13px;font-weight:500;color:${over?'#E24B4A':'inherit'};">${fmt(v)}${b?' / '+fmt(b):''}</span>
-          </div>
-          ${b?`<div class="prog-bg"><div class="prog-fill" style="width:${p}%;background:${over?'#E24B4A':col};"></div></div>`:''}
+  // Category breakdown
+  const cspend={};
+  mT.filter(t=>t.type==='expense').forEach(t=>{cspend[t.category]=(cspend[t.category]||0)+t.amount;});
+  const cl=document.getElementById('cat-list');
+  const sorted=Object.entries(cspend).sort((a,b)=>b[1]-a[1]);
+  cl.innerHTML=sorted.length?sorted.map(([c,v])=>{
+    const b=budgets[c]||0,p=pct(v,b),col=CC[c]||'#888',over=b&&v>b;
+    return`<div class="cr">
+      <div class="cr-ic" style="background:${col}18;color:${col};"><i class="ti ${CI[c]||'ti-tag'}" aria-hidden="true"></i></div>
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+          <span style="font-size:13px;font-weight:500;">${c}</span>
+          <span style="font-size:13px;font-weight:700;color:${over?'var(--red-mid)':'var(--text)'};">${fmt(v)}${b?' / '+fmt(b):''}</span>
         </div>
-        ${over?`<span style="font-size:11px;color:#E24B4A;white-space:nowrap;">Over!</span>`:'<span></span>'}
-      </div>`;
-    }).join('');
-  }
+        ${b?`<div class="prog"><div class="pf" style="width:${p}%;background:${over?'var(--red-mid)':col};"></div></div>`:''}
+      </div>
+      ${over?`<span style="font-size:11px;color:var(--red-mid);font-weight:700;">Over!</span>`:'<span></span>'}
+    </div>`;
+  }).join(''):'<div class="empty" style="padding:10px 0;"><i class="ti ti-chart-pie-2" aria-hidden="true"></i>No expenses yet</div>';
 
+  // Today list
   const tl=document.getElementById('today-list');
-  if(!tT.length){tl.innerHTML='<div class="empty" style="padding:16px 0;"><i class="ti ti-receipt"></i>No transactions today</div>';}
-  else{
-    tl.innerHTML=tT.slice().reverse().map(t=>{
-      const col=t.type==='income'?'var(--green-mid)':'var(--red-mid)';
-      const c=CAT_COLORS[t.category]||'#888';
-      return`<div class="tx-row">
-        <div class="tx-icon" style="background:${c}22;color:${c};"><i class="ti ${CAT_ICONS[t.category]||'ti-tag'}"></i></div>
-        <div>
-          <div style="font-size:14px;">${t.desc}</div>
-          <div style="font-size:11px;color:var(--text2);">${t.category}</div>
-        </div>
-        <div style="font-size:14px;font-weight:600;color:${col};">${t.type==='income'?'+':'−'}${fmt(t.amount)}</div>
-      </div>`;
-    }).join('');
-  }
+  tl.innerHTML=tT.length?tT.slice().reverse().map(txRow).join(''):'<div class="empty" style="padding:10px 0;"><i class="ti ti-receipt" aria-hidden="true"></i>Nothing added today</div>';
 
-  renderTxns();
-  renderBudgetEditor();
-  renderBudgetChart(catSpend);
-  document.getElementById('hdr-date').textContent=today.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('hdr-sub').textContent=TODAY.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  renderHist();
 }
 
-function renderTxns(){
-  const q=(document.getElementById('search-q').value||'').toLowerCase();
-  const fc=document.getElementById('filter-cat').value;
-  const mo=selMonth();
+function txRow(t){
+  const col=CC[t.category]||'#888', ac=t.type==='income'?'var(--green-mid)':'var(--red-mid)', sign=t.type==='income'?'+':'−';
+  return`<div class="tx">
+    <div class="tx-ic" style="background:${col}18;color:${col};"><i class="ti ${CI[t.category]||'ti-tag'}" aria-hidden="true"></i></div>
+    <div><div class="tx-d">${t.desc}</div><div class="tx-m">${t.category} · ${t.date}</div></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+      <span class="tx-a" style="color:${ac};">${sign}${fmt(t.amount)}</span>
+      <button class="tx-del" onclick="delTxn('${t.id}')" aria-label="Delete ${t.desc}"><i class="ti ti-trash" aria-hidden="true"></i></button>
+    </div>
+  </div>`;
+}
+
+// ── History ──
+function renderHist(){
+  const q=(document.getElementById('srch').value||'').toLowerCase(), fc=document.getElementById('fcat').value, mo=sMo();
   let list=txns.filter(t=>t.date.slice(0,7)===mo);
   if(q)list=list.filter(t=>t.desc.toLowerCase().includes(q)||t.category.toLowerCase().includes(q));
   if(fc)list=list.filter(t=>t.category===fc);
-  list=list.slice().reverse();
-  const el=document.getElementById('txn-list');
-  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-list"></i>No transactions found</div>';return;}
+  list.sort((a,b)=>b.date.localeCompare(a.date));
+  const el=document.getElementById('hist-list');
+  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-list" aria-hidden="true"></i>No transactions found</div>';return;}
   let lastDate='';
   el.innerHTML=list.map(t=>{
-    let dateHdr='';
-    if(t.date!==lastDate){lastDate=t.date;const d=new Date(t.date+'T00:00');dateHdr=`<div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;padding:10px 0 4px;">${d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}</div>`;}
-    const col=t.type==='income'?'var(--green-mid)':'var(--red-mid)';
-    const c=CAT_COLORS[t.category]||'#888';
-    return`${dateHdr}<div class="tx-row">
-      <div class="tx-icon" style="background:${c}22;color:${c};"><i class="ti ${CAT_ICONS[t.category]||'ti-tag'}"></i></div>
-      <div>
-        <div style="font-size:14px;">${t.desc}</div>
-        <div style="font-size:11px;color:var(--text2);">${t.category}</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:14px;font-weight:600;color:${col};">${t.type==='income'?'+':'−'}${fmt(t.amount)}</span>
-        <button class="del-btn" onclick="deleteTxn('${t.id}')" aria-label="Delete"><i class="ti ti-trash"></i></button>
-      </div>
-    </div>`;
+    let h='';
+    if(t.date!==lastDate){lastDate=t.date;const d=new Date(t.date+'T00:00');h=`<div class="sec" style="margin-top:8px;">${d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}</div>`;}
+    return h+txRow(t);
   }).join('');
 }
 
-function renderBudgetEditor(){
+// ── Budget ──
+function renderBudget(){
   document.getElementById('budget-editor').innerHTML=CATS.map(c=>`
-    <div class="budget-row">
-      <div class="cat-icon" style="background:${CAT_COLORS[c]}22;color:${CAT_COLORS[c]};font-size:15px;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;"><i class="ti ${CAT_ICONS[c]}"></i></div>
-      <span style="font-size:14px;">${c}</span>
-      <input type="number" inputmode="decimal" value="${budgets[c]||''}" placeholder="₹ limit" style="text-align:right;" onchange="budgets['${c}']=+this.value;save();refresh();" />
+    <div class="bdr">
+      <div class="cr-ic" style="background:${CC[c]}18;color:${CC[c]};"><i class="ti ${CI[c]}" aria-hidden="true"></i></div>
+      <span style="font-size:14px;font-weight:500;">${c}</span>
+      <input type="number" inputmode="decimal" value="${budgets[c]||''}" placeholder="₹ limit" style="text-align:right;" onchange="budgets['${c}']=+this.value;lsSave();gsQueuePush();refresh();"/>
     </div>`).join('');
-}
-
-function renderBudgetChart(catSpend){
-  const labels=CATS;
-  const actual=labels.map(c=>Math.round(catSpend[c]||0));
-  const budget=labels.map(c=>budgets[c]||0);
-  if(budgetChart)budgetChart.destroy();
-  budgetChart=new Chart(document.getElementById('budgetChart'),{
+  const mo=sMo(), cspend={};
+  txns.filter(t=>t.date.slice(0,7)===mo&&t.type==='expense').forEach(t=>{cspend[t.category]=(cspend[t.category]||0)+t.amount;});
+  if(bChart)bChart.destroy();
+  bChart=new Chart(document.getElementById('bchart'),{
     type:'bar',
-    data:{labels,datasets:[
-      {label:'Spent',data:actual,backgroundColor:labels.map(c=>CAT_COLORS[c]+'CC'),borderRadius:4},
-      {label:'Budget',data:budget,backgroundColor:'rgba(0,0,0,0.05)',borderWidth:1.5,borderColor:labels.map(c=>CAT_COLORS[c]),borderRadius:4}
+    data:{labels:CATS,datasets:[
+      {label:'Spent',data:CATS.map(c=>Math.round(cspend[c]||0)),backgroundColor:CATS.map(c=>CC[c]+'cc'),borderRadius:4},
+      {label:'Budget',data:CATS.map(c=>budgets[c]||0),backgroundColor:'rgba(128,128,128,.1)',borderWidth:1.5,borderColor:CATS.map(c=>CC[c]),borderRadius:4}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},autoSkip:false,maxRotation:40}},y:{ticks:{callback:v=>'₹'+v.toLocaleString('en-IN'),font:{size:10}}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:40,autoSkip:false}},y:{ticks:{callback:v=>'₹'+v.toLocaleString('en-IN'),font:{size:10}}}}}
   });
 }
 
+// ── Calendar ──
+function calNav(d){calM+=d;if(calM>11){calM=0;calY++;}if(calM<0){calM=11;calY--;}renderCal();}
+function renderCal(){
+  const DOWS=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  document.getElementById('cal-dow').innerHTML=DOWS.map(d=>`<div class="dow">${d}</div>`).join('');
+  const first=new Date(calY,calM,1).getDay(), dim=new Date(calY,calM+1,0).getDate(), prev=new Date(calY,calM,0).getDate();
+  const mo=`${calY}-${String(calM+1).padStart(2,'0')}`;
+  document.getElementById('cal-title').textContent=new Date(calY,calM,1).toLocaleString('en-IN',{month:'long',year:'numeric'});
+  const ds={};
+  txns.filter(t=>t.date.startsWith(mo)).forEach(t=>{const d=t.date.split('-')[2];if(!ds[d])ds[d]={e:0,i:0};t.type==='expense'?ds[d].e+=t.amount:ds[d].i+=t.amount;});
+  let cells=[];
+  for(let i=first-1;i>=0;i--)cells.push({n:prev-i,cur:false});
+  for(let d=1;d<=dim;d++)cells.push({n:d,cur:true});
+  while(cells.length%7!==0)cells.push({n:cells.length-dim-first+1,cur:false});
+  document.getElementById('cal-grid').innerHTML=cells.map(c=>{
+    if(!c.cur)return`<div class="cd dim" aria-hidden="true"><span>${c.n}</span></div>`;
+    const ds2=String(c.n).padStart(2,'0'), dateStr=`${calY}-${String(calM+1).padStart(2,'0')}-${ds2}`;
+    const sp=ds[ds2], isTod=dateStr===TSTR, isSel=dateStr===calSel;
+    const cls=['cd',isSel?'sel':isTod?'tod':'',sp?'has':''].filter(Boolean).join(' ');
+    const sub=sp?.e?`<span class="cd-sub">-${sp.e>=1000?Math.round(sp.e/1000)+'k':Math.round(sp.e)}</span>`:'';
+    return`<button class="${cls}" onclick="calSel='${dateStr}';renderCal();" aria-label="${dateStr}"><span>${c.n}</span>${sub}</button>`;
+  }).join('');
+  const panel=document.getElementById('cal-panel');
+  if(calSel){
+    const d=new Date(calSel+'T00:00'), dt=txns.filter(t=>t.date===calSel);
+    document.getElementById('cal-p-date').textContent=d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+    const exp=dt.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const inc=dt.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const tot=document.getElementById('cal-p-total');
+    if(dt.length){tot.textContent=(exp?'−'+fmt(exp):'')+(exp&&inc?' · ':'')+(inc?'+'+fmt(inc):'');tot.style.color=exp?'var(--red-mid)':'var(--green-mid)';}
+    else{tot.textContent='No transactions';tot.style.color='var(--text3)';}
+    document.getElementById('cal-p-txns').innerHTML=dt.length?dt.map(txRow).join(''):`<div style="font-size:13px;color:var(--text3);padding:4px 0;">Tap below to add for this date</div>`;
+    panel.style.display='block';
+  }else panel.style.display='none';
+}
+function addForDate(){document.getElementById('q-date').value=calSel;go('add',1);setTimeout(()=>document.getElementById('q-desc').focus(),100);}
+
+// ── Transactions ──
 let _uid=Date.now();
 function addTxn(desc,amount,category,type,date){
-  txns.push({id:(++_uid).toString(),desc,amount:Math.abs(amount),category,type,date:date||todayStr});
-  save();refresh();
+  const t={id:(++_uid).toString(),desc,amount:Math.abs(+amount),category,type,date:date||TSTR};
+  txns.push(t);lsSave();refresh();renderCal();gsQueuePush();
 }
-function deleteTxn(id){
-  txns=txns.filter(t=>t.id!==id);
-  save();refresh();renderCal();toast('Deleted');
-}
+function delTxn(id){txns=txns.filter(t=>t.id!==id);lsSave();refresh();renderCal();gsQueuePush();toast('Deleted');}
 
 function quickAdd(){
-  const desc=document.getElementById('q-desc').value.trim();
-  const amt=parseFloat(document.getElementById('q-amt').value);
-  const cat=document.getElementById('q-cat').value;
-  const type=document.getElementById('q-type').value;
-  const date=document.getElementById('q-date').value||todayStr;
-  if(!desc||!amt){toast('Enter description and amount');return;}
-  addTxn(desc,amt,cat,type,date);
-  document.getElementById('q-desc').value='';
-  document.getElementById('q-amt').value='';
-  toast('Added!');
-  gotoPane('dash',document.querySelector('.nav-btn'));
+  const desc=document.getElementById('q-desc').value.trim(), amt=parseFloat(document.getElementById('q-amt').value);
+  if(!desc||!amt||isNaN(amt)){toast('Enter a description and amount');return;}
+  addTxn(desc,amt,document.getElementById('q-cat').value,document.getElementById('q-type').value,document.getElementById('q-date').value||TSTR);
+  document.getElementById('q-desc').value='';document.getElementById('q-amt').value='';
+  toast('Added! ✓');go('dash',0);
 }
 
-// ── AI header fix ──
-const AI_HEADERS={'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+// ── AI ──
+const AH={'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
 
 async function parseNL(){
   const raw=document.getElementById('nl-input').value.trim();
   if(!raw){toast('Type something first');return;}
-  const btn=document.getElementById('nl-btn');
-  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Parsing...';
-  const res_el=document.getElementById('nl-result');res_el.textContent='';
+  const btn=document.getElementById('nl-btn'),res=document.getElementById('nl-res');
+  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Parsing…';
+  res.textContent='';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:AI_HEADERS,body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:600,
-      system:`Parse natural language transactions into JSON. Today is ${todayStr}. Return ONLY a JSON array, no markdown, no extra text. Each item: desc (string), amount (positive number), category (one of: Food,Housing,Transport,Health,Entertainment,Shopping,Education,Utilities,Income,Other), type ("expense" or "income"), date (YYYY-MM-DD, default today if not mentioned).`,
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:AH,body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:700,
+      system:`Parse natural language expense/income. Today is ${TSTR}. Return ONLY a JSON array, no markdown. Each: {desc,amount(positive),category(Food|Housing|Transport|Health|Entertainment|Shopping|Education|Utilities|Income|Other),type("expense"|"income"),date(YYYY-MM-DD)}.`,
       messages:[{role:'user',content:raw}]
     })});
-    const data=await res.json();
-    const text=data.content?.find(b=>b.type==='text')?.text||'[]';
-    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    const data=await r.json();
+    const parsed=JSON.parse((data.content?.find(b=>b.type==='text')?.text||'[]').replace(/```json|```/g,'').trim());
     parsed.forEach(t=>addTxn(t.desc,t.amount,t.category,t.type,t.date));
     document.getElementById('nl-input').value='';
-    res_el.textContent=parsed.length+' transaction'+(parsed.length!==1?'s':'')+' added!';
-    toast(parsed.length+' added!');
-  }catch(e){res_el.textContent='Could not parse. Try the quick-add form.';}
-  finally{btn.disabled=false;btn.innerHTML='<i class="ti ti-sparkles"></i> Parse & add with AI';}
+    res.textContent=parsed.length+' transaction'+(parsed.length!==1?'s':'')+' added!';
+    toast(parsed.length+' added! ✓');
+  }catch(e){res.textContent='Could not parse. Use the quick-add form.';}
+  finally{btn.disabled=false;btn.innerHTML='<i class="ti ti-sparkles"></i>Parse &amp; add with AI';}
 }
 
 function bulkAdd(){
-  const raw=document.getElementById('bulk-input').value.trim();
-  if(!raw){toast('Paste some data first');return;}
-  const lines=raw.split('\n').filter(l=>l.trim());
+  const raw=document.getElementById('bulk-input').value.trim();if(!raw){toast('Paste some data first');return;}
   let count=0;
-  lines.forEach(line=>{
-    const c=line.split(',').map(x=>x.trim());
-    if(c.length<3)return;
-    const date=c[0]||todayStr;
-    const desc=c[1]||'Entry';
-    const amt=parseFloat(c[2]);
-    const type=(c[3]||'expense').toLowerCase().includes('inc')?'income':'expense';
-    const cat=c[4]||'Other';
-    if(amt&&desc)addTxn(desc,amt,cat,type,date),count++;
+  raw.split('\n').filter(l=>l.trim()).forEach(line=>{
+    const c=line.split(',').map(x=>x.trim());if(c.length<3)return;
+    const amt=parseFloat(c[2]);if(!amt||!c[1])return;
+    addTxn(c[1],amt,c[4]||'Other',(c[3]||'expense').toLowerCase().includes('inc')?'income':'expense',c[0]||TSTR);count++;
   });
-  document.getElementById('bulk-result').textContent=count+' transactions imported.';
-  document.getElementById('bulk-input').value='';
-  toast(count+' imported!');
+  document.getElementById('bulk-res').textContent=count+' transactions imported.';
+  document.getElementById('bulk-input').value='';toast(count+' imported! ✓');
 }
 
 async function askAI(q){
   if(!q.trim()){toast('Type a question first');return;}
-  const el=document.getElementById('ai-out');
-  el.innerHTML='<span style="color:var(--text3);">Thinking...</span>';
+  const el=document.getElementById('ai-out');el.innerHTML='<span style="color:var(--text3);">Thinking…</span>';
   document.getElementById('ai-q').value='';
-  const mo=selMonth();
-  const mT=txns.filter(t=>t.date.slice(0,7)===mo);
-  const mSpent=mT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const mInc=mT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const catSpend={};
-  mT.filter(t=>t.type==='expense').forEach(t=>{catSpend[t.category]=(catSpend[t.category]||0)+t.amount;});
-  const ctx=`You are a personal finance advisor for an Indian user (Kerala). Month: ${mo}. Income: ₹${mInc}, Expenses: ₹${mSpent}, Net: ₹${mInc-mSpent}. Category expenses: ${Object.entries(catSpend).map(([k,v])=>k+' ₹'+v).join(', ')||'none'}. Budgets set: ${Object.entries(budgets).map(([k,v])=>k+' ₹'+v).join(', ')}. Recent transactions: ${mT.slice(-12).map(t=>t.date+' '+t.desc+' '+t.type+' ₹'+t.amount).join('; ')||'none'}. Be concise, practical, specific to their numbers. Use ₹ symbol.`;
+  const mo=sMo(),mT=txns.filter(t=>t.date.slice(0,7)===mo);
+  const mS=mT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const mI=mT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const cs={};mT.filter(t=>t.type==='expense').forEach(t=>{cs[t.category]=(cs[t.category]||0)+t.amount;});
+  const ctx=`Personal finance advisor for Indian user. Month:${mo}. Income:₹${mI}, Expenses:₹${mS}, Net:₹${mI-mS}. Category spend:${Object.entries(cs).map(([k,v])=>k+'₹'+Math.round(v)).join(',')||'none'}. Budgets:${Object.entries(budgets).map(([k,v])=>k+'₹'+v).join(',')}. Recent:${mT.slice(-10).map(t=>t.date+' '+t.desc+' '+t.type+' ₹'+t.amount).join(';')||'none'}. Give 3-5 bullet points, practical, use ₹.`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:AI_HEADERS,body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,system:ctx,messages:[{role:'user',content:q}]})});
-    const data=await res.json();
-    const txt=data.content?.find(b=>b.type==='text')?.text||'No response.';
-    el.innerHTML=txt.replace(/\n/g,'<br>');
-  }catch(e){el.innerHTML='<span style="color:var(--red-mid);">Could not reach AI. Make sure you are logged in to Claude.ai.</span>';}
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:AH,body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,system:ctx,messages:[{role:'user',content:q}]})});
+    const data=await r.json();
+    el.innerHTML=(data.content?.find(b=>b.type==='text')?.text||'No response.').replace(/\n/g,'<br>');
+  }catch(e){el.innerHTML='<span style="color:var(--red-mid);">Could not reach AI. Please make sure you are logged in to claude.ai and try again.</span>';}
 }
 function doAsk(){askAI(document.getElementById('ai-q').value);}
 
-// ── Calendar ──
-let calYear=today.getFullYear(),calMonth=today.getMonth();
-let calSelected=todayStr;
-
-function calNav(dir){
-  calMonth+=dir;
-  if(calMonth>11){calMonth=0;calYear++;}
-  if(calMonth<0){calMonth=11;calYear--;}
-  renderCal();
-}
-
-function renderCal(){
-  const DAYS=['Su','Mo','Tu','We','Th','Fr','Sa'];
-  document.getElementById('cal-dow').innerHTML=DAYS.map(d=>`<div class="cal-dow">${d}</div>`).join('');
-
-  const firstDay=new Date(calYear,calMonth,1).getDay();
-  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
-  const daysInPrev=new Date(calYear,calMonth,0).getDate();
-  const mo=`${calYear}-${String(calMonth+1).padStart(2,'0')}`;
-
-  document.getElementById('cal-title').textContent=new Date(calYear,calMonth,1).toLocaleString('en-IN',{month:'long',year:'numeric'});
-
-  // Build daily spend map
-  const daySpend={};
-  txns.filter(t=>t.date.startsWith(mo)).forEach(t=>{
-    const d=t.date.split('-')[2];
-    if(!daySpend[d])daySpend[d]={exp:0,inc:0};
-    t.type==='expense'?daySpend[d].exp+=t.amount:daySpend[d].inc+=t.amount;
-  });
-
-  let cells=[];
-  // prev month padding
-  for(let i=firstDay-1;i>=0;i--)cells.push({day:daysInPrev-i,cur:false});
-  // current month
-  for(let d=1;d<=daysInMonth;d++)cells.push({day:d,cur:true});
-  // next month padding
-  while(cells.length%7!==0)cells.push({day:cells.length-daysInMonth-firstDay+1,cur:false});
-
-  document.getElementById('cal-grid').innerHTML=cells.map(c=>{
-    if(!c.cur)return`<div class="cal-day other-month"><span>${c.day}</span></div>`;
-    const ds=String(c.day).padStart(2,'0');
-    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${ds}`;
-    const sp=daySpend[ds];
-    const isToday=dateStr===todayStr;
-    const isSel=dateStr===calSelected;
-    const hasTxn=!!sp;
-    const cls=['cal-day',isToday&&!isSel?'today':'',isSel?'selected':'',hasTxn?'has-txn':'',dateStr>todayStr?'other-month':''].filter(Boolean).join(' ');
-    const subTxt=sp?`<span class="cal-day-total">${sp.exp?'−₹'+Math.round(sp.exp/100)+'k':sp.inc?'+':''}</span>`:'';
-    return`<button class="${cls}" onclick="calSelectDay('${dateStr}')" aria-label="${dateStr}"><span>${c.day}</span>${subTxt}</button>`;
-  }).join('');
-
-  calShowPanel(calSelected);
-}
-
-function calSelectDay(dateStr){
-  calSelected=dateStr;
-  renderCal();
-}
-
-function calShowPanel(dateStr){
-  const panel=document.getElementById('cal-day-panel');
-  const d=new Date(dateStr+'T00:00');
-  const label=d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('cal-panel-date').textContent=label;
-
-  const dayTxns=txns.filter(t=>t.date===dateStr);
-  const totalExp=dayTxns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const totalInc=dayTxns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-
-  const totEl=document.getElementById('cal-panel-total');
-  if(totalExp||totalInc){
-    totEl.textContent=(totalExp?'−₹'+Math.round(totalExp).toLocaleString('en-IN'):'')+(totalExp&&totalInc?' · ':'')+(totalInc?'+₹'+Math.round(totalInc).toLocaleString('en-IN'):'');
-    totEl.style.color=totalExp?'var(--red-mid)':'var(--green-mid)';
-  } else {totEl.textContent='No transactions';}
-
-  const txEl=document.getElementById('cal-panel-txns');
-  if(!dayTxns.length){txEl.innerHTML='<div style="font-size:13px;color:var(--text3);padding:4px 0;">Tap below to add for this date</div>';}
-  else{
-    txEl.innerHTML=dayTxns.map(t=>{
-      const col=t.type==='income'?'var(--green-mid)':'var(--red-mid)';
-      const c=CAT_COLORS[t.category]||'#888';
-      return`<div class="tx-row" style="padding:7px 0;">
-        <div class="tx-icon" style="background:${c}22;color:${c};width:30px;height:30px;border-radius:8px;font-size:15px;"><i class="ti ${CAT_ICONS[t.category]||'ti-tag'}"></i></div>
-        <div><div style="font-size:13px;">${t.desc}</div><div style="font-size:11px;color:var(--text2);">${t.category}</div></div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span style="font-size:13px;font-weight:600;color:${col};">${t.type==='income'?'+':'−'}₹${Math.round(t.amount).toLocaleString('en-IN')}</span>
-          <button class="del-btn" onclick="deleteTxn('${t.id}')" aria-label="Delete"><i class="ti ti-trash"></i></button>
-        </div>
-      </div>`;
-    }).join('');
-  }
-  panel.style.display='block';
-}
-
-function openAddForDate(){
-  document.getElementById('q-date').value=calSelected;
-  gotoPane('add',null);
-  document.querySelectorAll('.nav-btn')[1].classList.add('on');
-  document.getElementById('q-desc').focus();
-}
-
-// ── Navigation ──
-function gotoPane(name,btn){
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
-  document.getElementById('pane-'+name).classList.add('on');
-  if(btn){
-    const all=document.querySelectorAll('.nav-btn');
-    const map={dash:0,add:1,cal:2,txns:3,budget:4,ai:5,backup:6};
-    all[map[name]]?.classList.add('on');
-  }
-  if(name==='backup')renderBackupPane();
-  if(name==='cal'){
-    // sync calendar month to currently selected month
-    const mo=selMonth().split('-');
-    calYear=+mo[0];calMonth=+mo[1]-1;
-    renderCal();
-  }
-}
-
+// ── Export ──
 function exportData(){
-  const scope=document.getElementById('exp-scope')?.value||'all';
-  const format=document.getElementById('exp-format')?.value||'xlsx';
-  const mo=selMonth();
-  const rows=scope==='month'?txns.filter(t=>t.date.slice(0,7)===mo):txns;
+  const scope=document.getElementById('exp-scope').value, fmt2=document.getElementById('exp-fmt').value, mo=sMo();
+  const rows=(scope==='month'?txns.filter(t=>t.date.slice(0,7)===mo):txns).slice().sort((a,b)=>a.date.localeCompare(b.date));
   if(!rows.length){toast('No data to export');return;}
-
-  const data=rows.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(t=>({
-    Date:t.date,
-    Description:t.desc,
-    Amount:t.amount,
-    Type:t.type.charAt(0).toUpperCase()+t.type.slice(1),
-    Category:t.category
-  }));
-
-  const fname='money-manager-'+(scope==='month'?mo:todayStr);
-
-  if(format==='csv'){
-    const header='Date,Description,Amount,Type,Category\n';
-    const csv=header+data.map(r=>`${r.Date},"${r.Description}",${r.Amount},${r.Type},${r.Category}`).join('\n');
-    const blob=new Blob([csv],{type:'text/csv'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname+'.csv';a.click();
-    toast('CSV downloaded!');
-  } else {
+  const fname='money-manager-'+(scope==='month'?mo:TSTR);
+  const data=rows.map(t=>({Date:t.date,Description:t.desc,Amount:t.amount,Type:t.type.charAt(0).toUpperCase()+t.type.slice(1),Category:t.category}));
+  if(fmt2==='csv'){
+    const csv='Date,Description,Amount,Type,Category\n'+data.map(r=>`${r.Date},"${r.Description}",${r.Amount},${r.Type},${r.Category}`).join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=fname+'.csv';a.click();
+  }else{
     const wb=XLSX.utils.book_new();
-    const ws=XLSX.utils.json_to_sheet(data);
-
-    ws['!cols']=[{wch:12},{wch:30},{wch:12},{wch:10},{wch:14}];
-
-    const summaryData=[
-      ['Money Manager — Summary',''],
-      ['Exported on',new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})],
-      [''],
-      ['Total income','=SUMIF(Transactions!D:D,"Income",Transactions!C:C)'],
-      ['Total expenses','=SUMIF(Transactions!D:D,"Expense",Transactions!C:C)'],
-      ['Net savings','=B4-B5'],
-      [''],
-      ['Category','Total spent'],
-    ];
-    const cats=['Food','Housing','Transport','Health','Entertainment','Shopping','Education','Utilities','Other'];
-    cats.forEach(c=>summaryData.push([c,`=SUMIFS(Transactions!C:C,Transactions!E:E,"${c}",Transactions!D:D,"Expense")`]));
-    const ws2=XLSX.utils.aoa_to_sheet(summaryData);
-    ws2['!cols']=[{wch:18},{wch:16}];
-
-    XLSX.utils.book_append_sheet(wb,ws,'Transactions');
-    XLSX.utils.book_append_sheet(wb,ws2,'Summary');
+    const ws=XLSX.utils.json_to_sheet(data);ws['!cols']=[{wch:12},{wch:32},{wch:10},{wch:10},{wch:14}];
+    const sum=[['Summary',''],['Exported',new Date().toLocaleDateString('en-IN')],[''],['Total income',`=SUMIF(Transactions!D:D,"Income",Transactions!C:C)`],['Total expenses',`=SUMIF(Transactions!D:D,"Expense",Transactions!C:C)`],['Net','=B4-B5'],[''],...CATS.map(c=>[c,`=SUMIFS(Transactions!C:C,Transactions!E:E,"${c}",Transactions!D:D,"Expense")`])];
+    const ws2=XLSX.utils.aoa_to_sheet(sum);ws2['!cols']=[{wch:16},{wch:14}];
+    XLSX.utils.book_append_sheet(wb,ws,'Transactions');XLSX.utils.book_append_sheet(wb,ws2,'Summary');
     XLSX.writeFile(wb,fname+'.xlsx');
-    toast('Excel downloaded!');
   }
-  recordBackup();
+  toast('Downloaded! ✓');recordBackup();
 }
 
-function importFile(input){
-  const file=input.files[0];
-  if(!file)return;
-  const res=document.getElementById('import-result');
-  res.textContent='Reading file...';
+// ── Import ──
+function importFile(inp){
+  const file=inp.files[0];if(!file)return;
+  const res=document.getElementById('imp-res');res.textContent='Reading…';
   const reader=new FileReader();
-  reader.onload=function(e){
+  reader.onload=e=>{
     try{
       let rows=[];
       if(file.name.endsWith('.csv')){
-        const text=e.target.result;
-        const lines=text.split('\n').filter(l=>l.trim());
+        const lines=e.target.result.split('\n').filter(l=>l.trim());
         const hdr=lines[0].toLowerCase().split(',');
-        const iDate=hdr.findIndex(h=>h.includes('date'));
-        const iDesc=hdr.findIndex(h=>h.includes('desc'));
-        const iAmt=hdr.findIndex(h=>h.includes('amount')||h.includes('amt'));
-        const iType=hdr.findIndex(h=>h.includes('type'));
-        const iCat=hdr.findIndex(h=>h.includes('cat'));
+        const gi=k=>hdr.findIndex(h=>h.includes(k));
+        const[iD,iN,iA,iT,iC]=[gi('date'),gi('desc'),Math.max(gi('amount'),gi('amt')),gi('type'),gi('cat')];
         for(let i=1;i<lines.length;i++){
           const c=lines[i].split(',').map(x=>x.replace(/^"|"$/g,'').trim());
-          const amt=parseFloat(iAmt>=0?c[iAmt]:c[2]);
-          if(!amt)continue;
-          rows.push({date:iDate>=0?c[iDate]:todayStr,desc:iDesc>=0?c[iDesc]:c[1]||'Entry',amount:amt,type:(iType>=0?c[iType]:'expense').toLowerCase().includes('inc')?'income':'expense',category:iCat>=0?c[iCat]:'Other'});
+          const amt=parseFloat(iA>=0?c[iA]:c[2]);if(!amt)continue;
+          rows.push({date:iD>=0?c[iD]:TSTR,desc:iN>=0?c[iN]:c[1]||'Entry',amount:amt,type:(iT>=0?c[iT]:'expense').toLowerCase().includes('inc')?'income':'expense',category:iC>=0?c[iC]:'Other'});
         }
-      } else {
+      }else{
         const wb=XLSX.read(e.target.result,{type:'array'});
-        const ws=wb.Sheets[wb.SheetNames[0]];
-        const data=XLSX.utils.sheet_to_json(ws,{defval:''});
-        rows=data.map(r=>({
-          date:r.Date||r.date||todayStr,
-          desc:String(r.Description||r.description||r.Desc||r.desc||'Entry'),
-          amount:Math.abs(parseFloat(r.Amount||r.amount||0)),
-          type:String(r.Type||r.type||'expense').toLowerCase().includes('inc')?'income':'expense',
-          category:String(r.Category||r.category||'Other')
-        })).filter(r=>r.amount>0);
+        XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''}).forEach(r=>{
+          const amt=Math.abs(parseFloat(r.Amount||r.amount||0));if(!amt)return;
+          rows.push({date:String(r.Date||r.date||TSTR),desc:String(r.Description||r.description||'Entry'),amount:amt,type:String(r.Type||r.type||'expense').toLowerCase().includes('inc')?'income':'expense',category:String(r.Category||r.category||'Other')});
+        });
       }
-
-      if(!rows.length){res.textContent='No valid rows found. Check column headers.';return;}
-
-      const existingIds=new Set(txns.map(t=>t.date+'|'+t.desc+'|'+t.amount));
-      let added=0,skipped=0;
-      rows.forEach(r=>{
-        const key=r.date+'|'+r.desc+'|'+r.amount;
-        if(existingIds.has(key)){skipped++;return;}
-        addTxn(r.desc,r.amount,r.category,r.type,r.date);
-        existingIds.add(key);
-        added++;
-      });
-      res.innerHTML=`<span style="color:var(--green-mid);">${added} imported</span>${skipped?' · '+skipped+' duplicates skipped':''}`;
-      toast(added+' transactions imported!');
-      input.value='';
-    }catch(err){res.textContent='Error reading file. Make sure columns are: Date, Description, Amount, Type, Category.';}
+      const existing=new Set(txns.map(t=>t.date+'|'+t.desc+'|'+t.amount));
+      let added=0,skip=0;
+      rows.forEach(r=>{const k=r.date+'|'+r.desc+'|'+r.amount;if(existing.has(k)){skip++;return;}addTxn(r.desc,r.amount,r.category,r.type,r.date);existing.add(k);added++;});
+      res.innerHTML=`<span style="color:var(--green-mid);font-weight:600;">${added} imported</span>${skip?' · '+skip+' duplicates skipped':''}`;
+      toast(added+' imported! ✓');inp.value='';
+    }catch(e){res.textContent='Error reading file. Expected columns: Date, Description, Amount, Type, Category.';}
   };
   file.name.endsWith('.csv')?reader.readAsText(file):reader.readAsArrayBuffer(file);
 }
 
-let autoBackupOn=JSON.parse(localStorage.getItem('mm_autobackup')||'false');
-
-function toggleAutoBackup(){
-  autoBackupOn=!autoBackupOn;
-  localStorage.setItem('mm_autobackup',JSON.stringify(autoBackupOn));
-  document.getElementById('auto-toggle').classList.toggle('on',autoBackupOn);
-  toast(autoBackupOn?'Auto-backup reminder on':'Auto-backup reminder off');
-}
-
+// ── Backup ──
+function toggleAutoBackup(){autoBackup=!autoBackup;localStorage.setItem('mm_autobackup',JSON.stringify(autoBackup));document.getElementById('auto-tog').classList.toggle('on',autoBackup);toast(autoBackup?'Reminder on':'Reminder off');}
 function recordBackup(){
-  const log=JSON.parse(localStorage.getItem('mm_backuplog')||'[]');
-  const entry={time:new Date().toISOString(),count:txns.length};
-  log.unshift(entry);
-  if(log.length>10)log.pop();
-  localStorage.setItem('mm_backuplog',JSON.stringify(log));
-  localStorage.setItem('mm_lastbackup',entry.time);
-  renderBackupPane();
+  const log=JSON.parse(localStorage.getItem('mm_bklog')||'[]');
+  log.unshift({time:new Date().toISOString(),count:txns.length});if(log.length>10)log.pop();
+  localStorage.setItem('mm_bklog',JSON.stringify(log));localStorage.setItem('mm_lastbk',new Date().toISOString());
+  renderBackup();
+}
+function renderBackup(){
+  document.getElementById('auto-tog').classList.toggle('on',autoBackup);
+  const last=localStorage.getItem('mm_lastbk');
+  document.getElementById('last-bk').textContent=last?new Date(last).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'Never';
+  const log=JSON.parse(localStorage.getItem('mm_bklog')||'[]');
+  document.getElementById('bk-log').innerHTML=log.length?log.map(e=>`<div class="bk-log-r"><span>${new Date(e.time).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span><span style="color:var(--text3);">${e.count} transactions</span></div>`).join(''):'<div style="color:var(--text3);font-size:12px;padding:6px 0;">No backups yet</div>';
+}
+function checkAutoBackup(){
+  if(!autoBackup)return;
+  const last=localStorage.getItem('mm_lastbk');
+  if(last&&(Date.now()-new Date(last).getTime())/(36e5)>=20)setTimeout(()=>{if(confirm('Daily backup reminder — download your backup now?'))exportData();},1500);
 }
 
-function renderBackupPane(){
-  const tog=document.getElementById('auto-toggle');
-  if(tog)tog.classList.toggle('on',autoBackupOn);
+// ════════════════════════════════════════════════════════
+// GOOGLE SIGN-IN + PER-USER SHEETS SYNC
+//
+// How multi-user works:
+// ┌─────────────┐   signs in   ┌──────────────────┐
+// │  User A     │ ──────────►  │ User A's Drive   │
+// │  (anyone)   │              │ "Money Manager"  │
+// └─────────────┘              │ Sheet — private  │
+//                              └──────────────────┘
+// ┌─────────────┐   signs in   ┌──────────────────┐
+// │  User B     │ ──────────►  │ User B's Drive   │
+// │  (anyone)   │              │ "Money Manager"  │
+// └─────────────┘              │ Sheet — private  │
+//                              └──────────────────┘
+// You (app owner) → NO access to either Sheet.
+// localStorage is keyed by email so same device, different users = different data.
+// ════════════════════════════════════════════════════════
 
-  const last=localStorage.getItem('mm_lastbackup');
-  const lastEl=document.getElementById('last-backup-time');
-  if(lastEl)lastEl.textContent=last?new Date(last).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'Never';
-
-  const log=JSON.parse(localStorage.getItem('mm_backuplog')||'[]');
-  const logEl=document.getElementById('backup-log');
-  if(logEl){
-    if(!log.length){logEl.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px 0;">No backups yet</div>';return;}
-    logEl.innerHTML=log.map(e=>`<div class="backup-log-row"><span>${new Date(e.time).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span><span style="color:var(--text3);">${e.count} transactions</span></div>`).join('');
+function updateAuthCard(user){
+  const card=document.getElementById('auth-card');
+  const isConfigured=GSHEETS_CLIENT_ID!=='YOUR_CLIENT_ID.apps.googleusercontent.com';
+  if(user){
+    const ph=user.photo?`<img src="${user.photo}" class="av" alt=""/>`:`<div class="av-ph"><i class="ti ti-user" aria-hidden="true"></i></div>`;
+    card.innerHTML=`${ph}
+      <div style="flex:1;min-width:0;">
+        <div class="au-name">${user.name}</div>
+        <div class="au-email" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${user.email}</div>
+        <div class="au-status live"><i class="ti ti-cloud-check" aria-hidden="true"></i> Syncing to your Google Drive</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="gsSignOut()">Sign out</button>`;
+    document.getElementById('sheet-row').style.display='flex';
+    document.getElementById('sync-banner').style.display='none';
+    setSyncInd('live');
+  }else{
+    card.innerHTML=`<div class="av-ph"><i class="ti ti-user" aria-hidden="true"></i></div>
+      <div style="flex:1;">
+        <div class="au-name">Not signed in</div>
+        <div class="au-email">Data saved locally only</div>
+        <div class="au-status local">No cloud sync</div>
+      </div>
+      ${isConfigured?`<button class="btn btn-g btn-sm" onclick="gsSignIn()" style="gap:6px;"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="Google"/>Sign in</button>`:'<span style="font-size:11px;color:var(--text3);">Setup needed</span>'}`;
+    document.getElementById('sheet-row').style.display='none';
+    document.getElementById('sync-banner').style.display=isConfigured?'flex':'none';
+    setSyncInd('local');
   }
 }
 
-function checkAutoBackupReminder(){
-  if(!autoBackupOn)return;
-  const last=localStorage.getItem('mm_lastbackup');
-  if(!last)return;
-  const diff=(Date.now()-new Date(last).getTime())/(1000*60*60);
-  if(diff>=20){
-    setTimeout(()=>{
-      if(confirm('Daily backup reminder: Download your backup now?'))exportData();
-    },1500);
-  }
+async function gsReq(url,opts={}){
+  const res=await fetch(url,{...opts,headers:{'Authorization':'Bearer '+gsUser.accessToken,'Content-Type':'application/json',...(opts.headers||{})}});
+  if(res.status===401){toast('Session expired — please sign in again');gsSignOut();throw new Error('401');}
+  if(!res.ok)throw new Error(await res.text());
+  return res.json();
 }
 
-const styleEl=document.createElement('style');
-styleEl.textContent='@keyframes spin{to{transform:rotate(360deg)}}';
-document.head.appendChild(styleEl);
-document.getElementById('q-date').value=todayStr;
-refresh();
-renderCal();
-checkAutoBackupReminder();
+async function gsEnsureSheet(){
+  if(!gsUser)return;
+  const cached=localStorage.getItem(`mm_${gsUser.email}_sheetId`);
+  if(cached){gsSheetId=cached;document.getElementById('sheet-link').href=`https://docs.google.com/spreadsheets/d/${cached}`;return;}
+  const q=encodeURIComponent(`name='Money Manager' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false`);
+  const list=await gsReq(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`);
+  if(list.files?.length){gsSheetId=list.files[0].id;}
+  else{
+    const c=await gsReq('https://sheets.googleapis.com/v4/spreadsheets',{method:'POST',body:JSON.stringify({properties:{title:'Money Manager'},sheets:[{properties:{title:'Transactions'}},{properties:{title:'Budgets'}}]})});
+    gsSheetId=c.spreadsheetId;
+    await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Transactions!A1:E1?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values:[['Date','Description','Amount','Type','Category']]})});
+    await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Budgets!A1:B1?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values:[['Category','Budget']]})});
+  }
+  localStorage.setItem(`mm_${gsUser.email}_sheetId`,gsSheetId);
+  document.getElementById('sheet-link').href=`https://docs.google.com/spreadsheets/d/${gsSheetId}`;
+}
+
+async function gsPull(){
+  if(!gsUser||!gsSheetId)return;
+  setSyncInd('busy');
+  try{
+    const rows=await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Transactions!A2:E`);
+    if(rows.values?.length){let u=Date.now();txns=rows.values.filter(r=>r[2]&&+r[2]>0).map(r=>({id:(++u).toString(),date:r[0]||TSTR,desc:r[1]||'',amount:Math.abs(+r[2]),type:(r[3]||'expense').toLowerCase(),category:r[4]||'Other'}));}
+    const br=await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Budgets!A2:B`);
+    if(br.values?.length)br.values.forEach(r=>{if(r[0]&&r[1])budgets[r[0]]=+r[1]||0;});
+    lsSave();refresh();renderCal();setSyncInd('live');
+  }catch(e){console.warn('Pull failed',e);setSyncInd('local');}
+}
+
+async function gsPushAll(){
+  if(!gsUser||!gsSheetId)return;
+  setSyncInd('busy');
+  try{
+    const rows=txns.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(t=>[t.date,t.desc,t.amount,t.type,t.category]);
+    await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Transactions!A1?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values:[['Date','Description','Amount','Type','Category'],...rows]})});
+    const br=Object.entries(budgets).map(([k,v])=>[k,v]);
+    await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Budgets!A1?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values:[['Category','Budget'],...br]})});
+    setSyncInd('live');
+  }catch(e){console.warn('Push failed',e);toast('Sync error — data saved locally');setSyncInd('local');}
+}
+
+function gsQueuePush(){if(!gsUser||!gsSheetId)return;clearTimeout(gsPushTimer);gsPushTimer=setTimeout(gsPushAll,1800);}
+
+function gsSignIn(){
+  if(GSHEETS_CLIENT_ID==='YOUR_CLIENT_ID.apps.googleusercontent.com'){go('backup',6);toast('Add your Client ID first — see setup card',3500);return;}
+  const client=google.accounts.oauth2.initTokenClient({
+    client_id:GSHEETS_CLIENT_ID,scope:GSHEETS_SCOPE,
+    callback:async resp=>{
+      if(resp.error){toast('Sign in failed: '+resp.error);return;}
+      const profile=await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+resp.access_token}}).then(r=>r.json());
+      gsUser={name:profile.name,email:profile.email,photo:profile.picture,accessToken:resp.access_token};
+      localStorage.setItem('mm_gs_user',JSON.stringify({name:gsUser.name,email:gsUser.email,photo:gsUser.photo}));
+      localStorage.setItem('mm_gs_token',resp.access_token);
+      lsLoad(); // load this user's local cache
+      updateAuthCard(gsUser);
+      refresh();renderCal();
+      await gsEnsureSheet();
+      await gsPull();
+      toast('Signed in — syncing your Sheet ✓');
+    }
+  });
+  client.requestAccessToken();
+}
+
+function gsSignOut(){
+  if(gsUser){try{google.accounts.oauth2.revoke(gsUser.accessToken,()=>{});}catch(e){}localStorage.removeItem('mm_gs_user');localStorage.removeItem('mm_gs_token');gsUser=null;gsSheetId=null;}
+  lsLoad(); // restore anonymous local data
+  updateAuthCard(null);refresh();renderCal();toast('Signed out');
+}
+
+function gsRestoreSession(){
+  const stored=localStorage.getItem('mm_gs_user'),token=localStorage.getItem('mm_gs_token');
+  if(!stored||!token){updateAuthCard(null);return;}
+  gsUser={...JSON.parse(stored),accessToken:token};
+  const sid=localStorage.getItem(`mm_${gsUser.email}_sheetId`);if(sid)gsSheetId=sid;
+  lsLoad(); // load this user's local cache while we refresh token
+  updateAuthCard(gsUser);refresh();renderCal();
+  if(GSHEETS_CLIENT_ID==='YOUR_CLIENT_ID.apps.googleusercontent.com')return;
+  try{
+    const client=google.accounts.oauth2.initTokenClient({
+      client_id:GSHEETS_CLIENT_ID,scope:GSHEETS_SCOPE,prompt:'',
+      callback:async resp=>{if(resp.error||!resp.access_token)return;gsUser.accessToken=resp.access_token;localStorage.setItem('mm_gs_token',resp.access_token);await gsEnsureSheet();await gsPull();}
+    });
+    client.requestAccessToken({prompt:''});
+  }catch(e){console.warn('Silent token refresh failed',e);}
+}
+
+// ── Boot ──
+(function boot(){
+  autoBackup=JSON.parse(localStorage.getItem('mm_autobackup')||'false');
+  if(GSHEETS_CLIENT_ID!=='YOUR_CLIENT_ID.apps.googleusercontent.com'){const sc=document.getElementById('setup-card');if(sc)sc.style.display='none';}
+  lsLoad();
+  document.getElementById('q-date').value=TSTR;
+  updateAuthCard(null);setSyncInd('local');
+  refresh();renderCal();checkAutoBackup();
+  if(typeof google!=='undefined'&&google?.accounts)gsRestoreSession();
+  else{const s=document.querySelector('script[src*="gsi/client"]');if(s)s.addEventListener('load',gsRestoreSession);}
+})();
 </script>
 </body>
 </html>
