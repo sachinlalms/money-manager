@@ -35,8 +35,6 @@
 html,body{height:100%;overflow:hidden;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);}
 #app{max-width:430px;margin:0 auto;background:var(--bg);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
-
-/* Header */
 #hdr{flex-shrink:0;padding:env(safe-area-inset-top,44px) 16px 10px;background:var(--bg);border-bottom:1px solid var(--border);}
 .hdr-row{display:flex;align-items:center;justify-content:space-between;}
 .hdr-title{font-size:20px;font-weight:700;letter-spacing:-.3px;}
@@ -46,34 +44,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sync-dot.live{background:var(--green-mid);}
 .sync-dot.busy{background:var(--amber);}
 #sync-ind{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:2px;}
-
-/* Pane wrap — middle scrollable region */
 #pw{flex:1;overflow:hidden;position:relative;}
 .pane{display:none;position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px 20px;}
 .pane.on{display:block;}
-
-/* Nav */
 #nav{display:flex;flex-shrink:0;background:var(--bg);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom,0px);}
 .nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 1px 7px;border:none;background:none;color:var(--text3);font-size:8px;font-weight:600;cursor:pointer;letter-spacing:.03em;transition:color .15s;}
 .nb i{font-size:21px;line-height:1;}
 .nb.on{color:var(--blue-mid);}
-
-/* Cards */
 .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;}
 .card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
-
-/* Metrics */
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
 .mc{background:var(--bg2);border-radius:var(--rs);padding:11px 10px;}
 .mc-l{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
 .mc-v{font-size:17px;font-weight:800;color:var(--text);line-height:1.1;}
 .mc-s{font-size:10px;color:var(--text3);margin-top:3px;}
-
-/* Progress */
 .prog{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
 .pf{height:6px;border-radius:3px;transition:width .4s;}
-
-/* Transaction row */
 .tx{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
 .tx:last-child{border:none;}
 .tx-ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
@@ -82,24 +68,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tx-a{font-size:14px;font-weight:700;white-space:nowrap;}
 .tx-del{background:none;border:none;color:var(--text3);cursor:pointer;padding:3px;font-size:15px;display:block;margin-top:2px;}
 .tx-del:active{color:var(--red-mid);}
-
-/* Cat row */
 .cr{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);}
 .cr:last-child{border:none;}
 .cr-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-
-/* Budget row */
-.bdr{display:grid;grid-template-columns:34px 1fr 110px;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.bdr{display:grid;grid-template-columns:34px 1fr 100px 28px;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);}
 .bdr:last-child{border:none;}
-
-/* Forms */
 input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:15px;background:var(--bg2);color:var(--text);outline:none;font-family:inherit;-webkit-appearance:none;}
 input:focus,select:focus,textarea:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(26,115,232,.13);}
 textarea{resize:none;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .fg{margin-bottom:10px;}
-
-/* Buttons */
 .btn{width:100%;padding:13px;border:1px solid var(--border2);border-radius:var(--rs);font-size:15px;font-weight:600;background:var(--bg2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s;}
 .btn:active{opacity:.7;}
 .btn-p{background:var(--blue-mid);color:#fff;border-color:var(--blue-mid);}
@@ -107,15 +86,13 @@ textarea{resize:none;}
 .btn-g{background:#fff;color:#3c4043;border:1px solid #dadce0;font-size:14px;font-weight:500;}
 .btn-g img{width:18px;height:18px;}
 .btn-sm{width:auto;padding:7px 13px;font-size:13px;}
-
-/* Banner */
+.btn-icon{width:28px;height:28px;padding:0;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:15px;}
+.btn-icon:active{opacity:.6;}
 .banner{display:flex;align-items:center;gap:10px;background:var(--blue-bg);border:1px solid var(--blue-mid);border-radius:var(--rs);padding:11px 13px;margin-bottom:12px;}
 .banner i{font-size:20px;color:var(--blue-mid);flex-shrink:0;}
 .banner-text{flex:1;font-size:13px;color:var(--text);}
 .banner-text b{color:var(--blue-mid);}
 .bnr-btn{background:var(--blue-mid);color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
-
-/* Auth card */
 .auth-card{display:flex;align-items:center;gap:12px;background:var(--bg2);border-radius:var(--r);padding:14px;margin-bottom:12px;}
 .av{width:42px;height:42px;border-radius:50%;flex-shrink:0;object-fit:cover;}
 .av-ph{width:42px;height:42px;border-radius:50%;background:var(--blue-mid);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0;}
@@ -124,13 +101,9 @@ textarea{resize:none;}
 .au-status{font-size:11px;margin-top:3px;}
 .au-status.live{color:var(--green-mid);}
 .au-status.local{color:var(--text3);}
-
-/* Sheet link row */
 .sheet-row{display:flex;align-items:center;gap:10px;background:var(--green-bg);border:1px solid var(--green-mid);border-radius:var(--rs);padding:10px 13px;margin-bottom:12px;}
 .sheet-row i{color:var(--green-mid);font-size:18px;flex-shrink:0;}
 .sheet-row a{color:var(--green-mid);font-weight:600;font-size:13px;text-decoration:none;margin-left:auto;white-space:nowrap;}
-
-/* Calendar */
 .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .cal-nav{background:none;border:1px solid var(--border);border-radius:var(--rs);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);}
 .cal-mo{font-size:15px;font-weight:700;}
@@ -147,14 +120,10 @@ textarea{resize:none;}
 .cd.sel .cd-sub{color:rgba(255,255,255,.7);}
 .cal-panel{background:var(--bg2);border-radius:var(--r);padding:12px;margin-top:8px;}
 .cal-ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-
-/* Toggle */
 .tog{width:44px;height:26px;border-radius:13px;background:var(--border2);border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
 .tog.on{background:var(--blue-mid);}
 .tog::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2);}
 .tog.on::after{transform:translateX(18px);}
-
-/* Backup */
 .bk-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
 .bk-row:last-child{border:none;}
 .bk-l{font-size:14px;color:var(--text);}
@@ -162,27 +131,28 @@ textarea{resize:none;}
 .bk-log{max-height:140px;overflow-y:auto;}
 .bk-log-r{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);}
 .bk-log-r:last-child{border:none;}
-
-/* AI */
 .qbtns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
 .qbtn{padding:8px 13px;border:1px solid var(--border);border-radius:20px;font-size:13px;background:var(--bg2);color:var(--text2);cursor:pointer;font-weight:500;}
 .qbtn:active{opacity:.7;}
 .ai-out{background:var(--bg2);border-radius:var(--r);padding:14px;font-size:14px;line-height:1.75;color:var(--text);margin-bottom:12px;min-height:80px;}
-
-/* Misc */
 .empty{text-align:center;padding:28px 16px;color:var(--text3);}
 .empty i{font-size:34px;display:block;margin-bottom:8px;}
 .sec{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px;}
 .toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 68px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:opacity .2s;white-space:nowrap;pointer-events:none;}
 .toast.show{opacity:1;}
 code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font-family:monospace;}
+/* Color picker row */
+.color-swatches{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.swatch{width:28px;height:28px;border-radius:6px;border:2px solid transparent;cursor:pointer;flex-shrink:0;}
+.swatch.sel{border-color:var(--text);}
+/* Session restored banner */
+.session-banner{display:flex;align-items:center;gap:8px;background:var(--green-bg);border:1px solid var(--green-mid);border-radius:var(--rs);padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--green);}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- HEADER -->
 <div id="hdr">
   <div class="hdr-row">
     <div>
@@ -196,7 +166,6 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
   </div>
 </div>
 
-<!-- PANE WRAPPER -->
 <div id="pw">
 
 <!-- Dashboard -->
@@ -231,7 +200,7 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
     <div class="fg"><input id="q-desc" type="text" placeholder="Description (e.g. Lunch, Rent, Salary)"/></div>
     <div class="fg row2"><input id="q-amt" type="number" inputmode="decimal" placeholder="Amount ₹"/><select id="q-type"><option value="expense">Expense</option><option value="income">Income</option></select></div>
     <div class="fg row2">
-      <select id="q-cat"><option>Food</option><option>Housing</option><option>Transport</option><option>Health</option><option>Entertainment</option><option>Shopping</option><option>Education</option><option>Utilities</option><option>Other</option></select>
+      <select id="q-cat"></select>
       <input id="q-date" type="date"/>
     </div>
     <button class="btn btn-p" onclick="quickAdd()"><i class="ti ti-plus"></i>Add transaction</button>
@@ -274,10 +243,7 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
 <div id="p-hist" class="pane">
   <div style="display:flex;gap:8px;margin-bottom:12px;">
     <input type="search" id="srch" placeholder="Search…" oninput="renderHist()" style="flex:1;"/>
-    <select id="fcat" onchange="renderHist()" style="flex:0 0 120px;">
-      <option value="">All</option>
-      <option>Food</option><option>Housing</option><option>Transport</option><option>Health</option><option>Entertainment</option><option>Shopping</option><option>Education</option><option>Utilities</option><option>Income</option><option>Other</option>
-    </select>
+    <select id="fcat" onchange="renderHist()" style="flex:0 0 120px;"><option value="">All</option></select>
   </div>
   <div id="hist-list"></div>
 </div>
@@ -287,9 +253,30 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
   <div class="card">
     <div class="card-title"><i class="ti ti-target" style="color:var(--blue-mid);"></i>Monthly limits</div>
     <div id="budget-editor"></div>
+    <button class="btn" style="margin-top:12px;" onclick="showAddCatForm()"><i class="ti ti-plus"></i>Add custom category</button>
   </div>
+
+  <!-- Add custom category form -->
+  <div class="card" id="add-cat-card" style="display:none;">
+    <div class="card-title"><i class="ti ti-tag" style="color:var(--blue-mid);"></i>New category</div>
+    <div class="fg"><input id="new-cat-name" type="text" placeholder="Category name (e.g. Gym, Pets, Travel)"/></div>
+    <div class="fg">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">Pick a colour</div>
+      <div class="color-swatches" id="color-swatches"></div>
+    </div>
+    <div class="fg">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">Pick an icon</div>
+      <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:6px;" id="icon-picker"></div>
+    </div>
+    <div class="fg"><input id="new-cat-budget" type="number" inputmode="decimal" placeholder="Monthly budget ₹ (optional)"/></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-p" style="flex:1;" onclick="saveNewCat()"><i class="ti ti-check"></i>Save</button>
+      <button class="btn" style="flex:0 0 auto;width:auto;padding:13px 18px;" onclick="hideAddCatForm()">Cancel</button>
+    </div>
+  </div>
+
   <div class="sec">Budget vs actual</div>
-  <div class="card"><div style="position:relative;height:250px;"><canvas id="bchart"></canvas></div></div>
+  <div class="card"><div style="position:relative;height:260px;"><canvas id="bchart"></canvas></div></div>
 </div>
 
 <!-- AI -->
@@ -309,8 +296,6 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
 
 <!-- Sync / Backup -->
 <div id="p-backup" class="pane">
-
-  <!-- Auth card -->
   <div class="auth-card" id="auth-card">
     <div class="av-ph"><i class="ti ti-user" aria-hidden="true"></i></div>
     <div style="flex:1;">
@@ -322,15 +307,11 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"/>Sign in
     </button>
   </div>
-
-  <!-- Sheet link (shown after sign-in) -->
   <div class="sheet-row" id="sheet-row" style="display:none;">
     <i class="ti ti-table-filled" aria-hidden="true"></i>
     <span style="font-size:13px;color:var(--text);flex:1;">Syncing to your Google Sheet</span>
     <a id="sheet-link" href="#" target="_blank">Open Sheet ↗</a>
   </div>
-
-  <!-- Setup instructions (hidden once Client ID is set) -->
   <div class="card" id="setup-card">
     <div class="card-title"><i class="ti ti-settings" style="color:var(--blue-mid);"></i>One-time setup (app owner only)</div>
     <p style="font-size:13px;color:var(--text2);margin-bottom:10px;">To enable Google Sign-In for all users of your app:</p>
@@ -338,13 +319,11 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
       <li>Go to <a href="https://console.cloud.google.com" target="_blank" style="color:var(--blue-mid);">console.cloud.google.com</a> → New project</li>
       <li>APIs &amp; Services → Enable <b>Google Sheets API</b> + <b>Google Drive API</b></li>
       <li>Credentials → OAuth 2.0 Client ID → Web application type</li>
-      <li>Add <code>https://yourusername.github.io</code> to Authorised JavaScript origins</li>
+      <li>Add your GitHub Pages URL to Authorised JavaScript origins</li>
       <li>Copy Client ID and paste it into <code>GSHEETS_CLIENT_ID</code> in index.html</li>
     </ol>
-    <p style="font-size:12px;color:var(--text3);margin-top:10px;">Until configured, the app works fully with local storage. Once set up, each user who signs in gets their own private Google Sheet — you cannot access their data.</p>
+    <p style="font-size:12px;color:var(--text3);margin-top:10px;">Until configured, the app works fully with local storage. Once set up, each user gets their own private Google Sheet — you cannot access their data.</p>
   </div>
-
-  <!-- Export -->
   <div class="card">
     <div class="card-title"><i class="ti ti-download" style="color:var(--blue-mid);"></i>Export to Excel / CSV</div>
     <div class="fg row2">
@@ -353,8 +332,6 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
     </div>
     <button class="btn btn-p" onclick="exportData()"><i class="ti ti-file-spreadsheet"></i>Download now</button>
   </div>
-
-  <!-- Import -->
   <div class="card">
     <div class="card-title"><i class="ti ti-upload" style="color:var(--blue-mid);"></i>Import from Excel / CSV</div>
     <label style="display:block;border:1.5px dashed var(--border2);border-radius:var(--rs);padding:22px;text-align:center;cursor:pointer;margin-bottom:8px;" for="imp-file">
@@ -364,8 +341,6 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
     </label>
     <div id="imp-res" style="font-size:13px;color:var(--text2);text-align:center;"></div>
   </div>
-
-  <!-- Auto backup -->
   <div class="card">
     <div class="card-title"><i class="ti ti-clock" style="color:var(--blue-mid);"></i>Daily backup reminder</div>
     <div class="bk-row">
@@ -381,11 +356,9 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
       <div class="bk-log" id="bk-log"><div style="color:var(--text3);font-size:12px;padding:6px 0;">No backups yet</div></div>
     </div>
   </div>
-
 </div>
 </div><!-- /pw -->
 
-<!-- NAV -->
 <nav id="nav" aria-label="Main navigation">
   <button class="nb on" onclick="go('dash',0)" aria-label="Home"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Home</button>
   <button class="nb" onclick="go('add',1)" aria-label="Add"><i class="ti ti-circle-plus" aria-hidden="true"></i>Add</button>
@@ -402,139 +375,171 @@ code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:12px;font
 <script>
 'use strict';
 
-// ══════════════════════════════════════════════════════
-// ★ CONFIGURATION ★
-// Replace with your Client ID from Google Cloud Console.
-// This is safe to commit publicly — it only enables OAuth.
-// Each user's data goes into THEIR OWN Google Drive Sheet.
-// You (the app owner) cannot access anyone else's data.
-// ══════════════════════════════════════════════════════
+// ── CONFIG ──
 const GSHEETS_CLIENT_ID = '523623917519-a3kemrsonivdabht136jkb4tdt5mji7e.apps.googleusercontent.com';
 const GSHEETS_SCOPE = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets';
 
-// ── Category maps ──
-const CC={Food:'#ea4335',Housing:'#1a73e8',Transport:'#f9ab00',Health:'#1e8e3e',Entertainment:'#8430ce',Shopping:'#d93025',Education:'#4285f4',Utilities:'#5f6368',Income:'#137333',Other:'#80868b'};
-const CI={Food:'ti-bowl-spoon',Housing:'ti-home',Transport:'ti-car',Health:'ti-heart',Entertainment:'ti-device-tv',Shopping:'ti-shopping-bag',Education:'ti-school',Utilities:'ti-bolt',Income:'ti-coins',Other:'ti-tag'};
-const CATS=['Food','Housing','Transport','Health','Entertainment','Shopping','Education','Utilities'];
+// ── Built-in categories ──
+const BUILTIN_CATS = [
+  {name:'Food',      color:'#ea4335', icon:'ti-bowl-spoon'},
+  {name:'Housing',   color:'#1a73e8', icon:'ti-home'},
+  {name:'Transport', color:'#f9ab00', icon:'ti-car'},
+  {name:'Health',    color:'#1e8e3e', icon:'ti-heart'},
+  {name:'Entertainment', color:'#8430ce', icon:'ti-device-tv'},
+  {name:'Shopping',  color:'#d93025', icon:'ti-shopping-bag'},
+  {name:'Education', color:'#4285f4', icon:'ti-school'},
+  {name:'Utilities', color:'#5f6368', icon:'ti-bolt'},
+  {name:'Income',    color:'#137333', icon:'ti-coins'},
+  {name:'Other',     color:'#80868b', icon:'ti-tag'},
+];
+const PALETTE = ['#ea4335','#e91e63','#9c27b0','#673ab7','#3f51b5','#1a73e8','#03a9f4','#009688','#4caf50','#8bc34a','#ffeb3b','#ff9800','#ff5722','#795548','#607d8b','#f9ab00'];
+const ICON_POOL = ['ti-tag','ti-star','ti-flame','ti-gift','ti-plane','ti-camera','ti-music','ti-coffee','ti-bike','ti-car','ti-home','ti-tools','ti-dog','ti-flower','ti-ball-football','ti-device-gamepad-2','ti-salad','ti-pill','ti-baby-carriage','ti-shirt','ti-briefcase','ti-wallet','ti-chart-line','ti-building-bank'];
 
-// ── App state ──
-const TODAY=new Date();
-const TSTR=TODAY.toISOString().split('T')[0];
-let txns=[], budgets={Food:5000,Housing:15000,Transport:2000,Health:1500,Entertainment:1000,Shopping:3000,Education:1000,Utilities:2000};
-let gsUser=null, gsSheetId=null, gsPushTimer=null, bChart=null;
-let calY=TODAY.getFullYear(), calM=TODAY.getMonth(), calSel=TSTR;
-let autoBackup=false;
-
-// ── LocalStorage (namespaced per user so User A ≠ User B) ──
-const lk=k=>gsUser?`mm_${gsUser.email}_${k}`:`mm_anon_${k}`;
-function lsLoad(){
-  txns=JSON.parse(localStorage.getItem(lk('txns'))||'[]');
-  const b=localStorage.getItem(lk('budgets'));
-  if(b)Object.assign(budgets,JSON.parse(b));
+// ── Dynamic category maps (rebuilt from customCats) ──
+let customCats = []; // [{name,color,icon,budget?}]
+let CC = {}, CI = {};
+function rebuildCatMaps() {
+  CC = {}; CI = {};
+  [...BUILTIN_CATS, ...customCats].forEach(c => { CC[c.name] = c.color; CI[c.name] = c.icon; });
 }
-function lsSave(){
-  localStorage.setItem(lk('txns'),JSON.stringify(txns));
-  localStorage.setItem(lk('budgets'),JSON.stringify(budgets));
+function allCatNames() { return [...BUILTIN_CATS, ...customCats].map(c => c.name); }
+function budgetCatNames() { return [...BUILTIN_CATS.filter(c=>c.name!=='Income'&&c.name!=='Other'), ...customCats]; }
+
+// ── State ──
+const TODAY = new Date();
+const TSTR  = TODAY.toISOString().split('T')[0];
+let txns = [], budgets = {Food:5000,Housing:15000,Transport:2000,Health:1500,Entertainment:1000,Shopping:3000,Education:1000,Utilities:2000};
+let gsUser = null, gsSheetId = null, gsPushTimer = null, bChart = null;
+let calY = TODAY.getFullYear(), calM = TODAY.getMonth(), calSel = TSTR;
+let autoBackup = false;
+let selectedColor = PALETTE[0], selectedIcon = ICON_POOL[0];
+// ── FIX: token refresh state ──
+let tokenRefreshTimer = null;
+let isRestoringSession = false;
+
+// ── LocalStorage (per-user namespace) ──
+const lk = k => gsUser ? `mm_${gsUser.email}_${k}` : `mm_anon_${k}`;
+function lsLoad() {
+  txns    = JSON.parse(localStorage.getItem(lk('txns'))    || '[]');
+  const b = localStorage.getItem(lk('budgets'));
+  if (b) Object.assign(budgets, JSON.parse(b));
+  const cc = localStorage.getItem(lk('customCats'));
+  customCats = cc ? JSON.parse(cc) : [];
+  // merge custom cat budgets into budgets object
+  customCats.forEach(c => { if (c.budget && !budgets[c.name]) budgets[c.name] = c.budget; });
+  rebuildCatMaps();
+  populateCatSelects();
+}
+function lsSave() {
+  localStorage.setItem(lk('txns'),       JSON.stringify(txns));
+  localStorage.setItem(lk('budgets'),    JSON.stringify(budgets));
+  localStorage.setItem(lk('customCats'), JSON.stringify(customCats));
+}
+
+// ── Populate all <select id="q-cat"> and filter dropdowns ──
+function populateCatSelects() {
+  const names = allCatNames();
+  const qcat  = document.getElementById('q-cat');
+  const fcat  = document.getElementById('fcat');
+  if (qcat) qcat.innerHTML = names.filter(n=>n!=='Income').map(n=>`<option>${n}</option>`).join('') + '<option>Income</option>';
+  if (fcat) fcat.innerHTML = `<option value="">All</option>` + names.map(n=>`<option>${n}</option>`).join('');
 }
 
 // ── Utilities ──
-const fmt=n=>'₹'+Math.round(Math.abs(n)).toLocaleString('en-IN');
-const pct=(a,b)=>b?Math.min(100,Math.round(a/b*100)):0;
-function toast(msg,d=2400){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
-function setSyncInd(state){
-  const dot=document.getElementById('sdot'),lbl=document.getElementById('slbl');
+const fmt = n => '₹' + Math.round(Math.abs(n)).toLocaleString('en-IN');
+const pct = (a,b) => b ? Math.min(100, Math.round(a/b*100)) : 0;
+function toast(msg, d=2400) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),d); }
+function setSyncInd(state) {
+  const dot=document.getElementById('sdot'), lbl=document.getElementById('slbl');
   dot.className='sync-dot'+(state==='live'?' live':state==='busy'?' busy':'');
   lbl.textContent=state==='live'?'Synced':state==='busy'?'Syncing…':'Local only';
 }
 
 // ── Navigation ──
-function go(name,idx){
+function go(name, idx) {
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
   document.getElementById('p-'+name).classList.add('on');
   document.querySelectorAll('.nb')[idx].classList.add('on');
-  if(name==='cal'){calY=TODAY.getFullYear();calM=TODAY.getMonth();renderCal();}
-  if(name==='backup')renderBackup();
-  if(name==='budget')renderBudget();
+  if (name==='cal')    { calY=TODAY.getFullYear(); calM=TODAY.getMonth(); renderCal(); }
+  if (name==='backup') renderBackup();
+  if (name==='budget') renderBudget();
 }
 
 // ── Month selector ──
-function getMonths(){const s=new Set([TSTR.slice(0,7)]);txns.forEach(t=>s.add(t.date.slice(0,7)));return[...s].sort().reverse();}
-function sMo(){return document.getElementById('month-sel').value||TSTR.slice(0,7);}
-function refreshSel(){
-  const el=document.getElementById('month-sel'),cur=el.value||TSTR.slice(0,7);
+function getMonths() { const s=new Set([TSTR.slice(0,7)]); txns.forEach(t=>s.add(t.date.slice(0,7))); return [...s].sort().reverse(); }
+function sMo() { return document.getElementById('month-sel').value || TSTR.slice(0,7); }
+function refreshSel() {
+  const el=document.getElementById('month-sel'), cur=el.value||TSTR.slice(0,7);
   el.innerHTML=getMonths().map(m=>{const[y,mo]=m.split('-');return`<option value="${m}"${m===cur?' selected':''}>${new Date(+y,+mo-1,1).toLocaleString('en-IN',{month:'long',year:'numeric'})}</option>`;}).join('');
 }
 
-// ── Main dashboard refresh ──
-function refresh(){
+// ── Dashboard ──
+function refresh() {
   refreshSel();
   const mo=sMo(), mT=txns.filter(t=>t.date.slice(0,7)===mo), tT=txns.filter(t=>t.date===TSTR);
   const mSpent=mT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const mInc=mT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const mInc  =mT.filter(t=>t.type==='income' ).reduce((s,t)=>s+t.amount,0);
   const tSpent=tT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const totalB=Object.values(budgets).reduce((a,b)=>a+b,0);
-  const net=mInc-mSpent;
+  const net   =mInc-mSpent;
 
-  document.getElementById('d-today').textContent=fmt(tSpent);
-  document.getElementById('d-today-c').textContent=tT.length+' item'+(tT.length!==1?'s':'');
-  document.getElementById('d-spent').textContent=fmt(mSpent);
-  document.getElementById('d-brem').textContent=totalB?fmt(Math.max(0,totalB-mSpent))+' left':'Set a budget';
-  document.getElementById('d-inc').textContent=fmt(mInc);
-  document.getElementById('d-net').textContent='Net '+(net>=0?'+':'')+fmt(net);
-  const op=pct(mSpent,totalB);
-  document.getElementById('overall-bar').style.cssText=`width:${op}%;background:${op>90?'var(--red-mid)':op>70?'var(--amber)':'var(--blue-mid)'};`;
-  document.getElementById('bpct').textContent=op+'% used';
+  document.getElementById('d-today').textContent   = fmt(tSpent);
+  document.getElementById('d-today-c').textContent = tT.length+' item'+(tT.length!==1?'s':'');
+  document.getElementById('d-spent').textContent   = fmt(mSpent);
+  document.getElementById('d-brem').textContent    = totalB ? fmt(Math.max(0,totalB-mSpent))+' left' : 'Set a budget';
+  document.getElementById('d-inc').textContent     = fmt(mInc);
+  document.getElementById('d-net').textContent     = 'Net '+(net>=0?'+':'')+fmt(net);
+  const op = pct(mSpent,totalB);
+  document.getElementById('overall-bar').style.cssText = `width:${op}%;background:${op>90?'var(--red-mid)':op>70?'var(--amber)':'var(--blue-mid)'};`;
+  document.getElementById('bpct').textContent = op+'% used';
 
-  // Category breakdown
   const cspend={};
   mT.filter(t=>t.type==='expense').forEach(t=>{cspend[t.category]=(cspend[t.category]||0)+t.amount;});
   const cl=document.getElementById('cat-list');
   const sorted=Object.entries(cspend).sort((a,b)=>b[1]-a[1]);
-  cl.innerHTML=sorted.length?sorted.map(([c,v])=>{
-    const b=budgets[c]||0,p=pct(v,b),col=CC[c]||'#888',over=b&&v>b;
+  cl.innerHTML = sorted.length ? sorted.map(([c,v])=>{
+    const b=budgets[c]||0, p=pct(v,b), col=CC[c]||'#888', over=b&&v>b;
     return`<div class="cr">
       <div class="cr-ic" style="background:${col}18;color:${col};"><i class="ti ${CI[c]||'ti-tag'}" aria-hidden="true"></i></div>
-      <div>
+      <div style="flex:1;min-width:0;">
         <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
           <span style="font-size:13px;font-weight:500;">${c}</span>
           <span style="font-size:13px;font-weight:700;color:${over?'var(--red-mid)':'var(--text)'};">${fmt(v)}${b?' / '+fmt(b):''}</span>
         </div>
         ${b?`<div class="prog"><div class="pf" style="width:${p}%;background:${over?'var(--red-mid)':col};"></div></div>`:''}
       </div>
-      ${over?`<span style="font-size:11px;color:var(--red-mid);font-weight:700;">Over!</span>`:'<span></span>'}
+      ${over?`<span style="font-size:11px;color:var(--red-mid);font-weight:700;margin-left:4px;">Over!</span>`:''}
     </div>`;
-  }).join(''):'<div class="empty" style="padding:10px 0;"><i class="ti ti-chart-pie-2" aria-hidden="true"></i>No expenses yet</div>';
+  }).join('') : '<div class="empty" style="padding:10px 0;"><i class="ti ti-chart-pie-2"></i>No expenses yet</div>';
 
-  // Today list
   const tl=document.getElementById('today-list');
-  tl.innerHTML=tT.length?tT.slice().reverse().map(txRow).join(''):'<div class="empty" style="padding:10px 0;"><i class="ti ti-receipt" aria-hidden="true"></i>Nothing added today</div>';
-
-  document.getElementById('hdr-sub').textContent=TODAY.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  tl.innerHTML = tT.length ? tT.slice().reverse().map(txRow).join('') : '<div class="empty" style="padding:10px 0;"><i class="ti ti-receipt"></i>Nothing added today</div>';
+  document.getElementById('hdr-sub').textContent = TODAY.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   renderHist();
 }
 
-function txRow(t){
+function txRow(t) {
   const col=CC[t.category]||'#888', ac=t.type==='income'?'var(--green-mid)':'var(--red-mid)', sign=t.type==='income'?'+':'−';
   return`<div class="tx">
     <div class="tx-ic" style="background:${col}18;color:${col};"><i class="ti ${CI[t.category]||'ti-tag'}" aria-hidden="true"></i></div>
     <div><div class="tx-d">${t.desc}</div><div class="tx-m">${t.category} · ${t.date}</div></div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
       <span class="tx-a" style="color:${ac};">${sign}${fmt(t.amount)}</span>
-      <button class="tx-del" onclick="delTxn('${t.id}')" aria-label="Delete ${t.desc}"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      <button class="tx-del" onclick="delTxn('${t.id}')" aria-label="Delete"><i class="ti ti-trash"></i></button>
     </div>
   </div>`;
 }
 
 // ── History ──
-function renderHist(){
+function renderHist() {
   const q=(document.getElementById('srch').value||'').toLowerCase(), fc=document.getElementById('fcat').value, mo=sMo();
   let list=txns.filter(t=>t.date.slice(0,7)===mo);
-  if(q)list=list.filter(t=>t.desc.toLowerCase().includes(q)||t.category.toLowerCase().includes(q));
-  if(fc)list=list.filter(t=>t.category===fc);
+  if(q)  list=list.filter(t=>t.desc.toLowerCase().includes(q)||t.category.toLowerCase().includes(q));
+  if(fc) list=list.filter(t=>t.category===fc);
   list.sort((a,b)=>b.date.localeCompare(a.date));
   const el=document.getElementById('hist-list');
-  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-list" aria-hidden="true"></i>No transactions found</div>';return;}
+  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-list"></i>No transactions found</div>';return;}
   let lastDate='';
   el.innerHTML=list.map(t=>{
     let h='';
@@ -544,29 +549,94 @@ function renderHist(){
 }
 
 // ── Budget ──
-function renderBudget(){
-  document.getElementById('budget-editor').innerHTML=CATS.map(c=>`
-    <div class="bdr">
-      <div class="cr-ic" style="background:${CC[c]}18;color:${CC[c]};"><i class="ti ${CI[c]}" aria-hidden="true"></i></div>
-      <span style="font-size:14px;font-weight:500;">${c}</span>
-      <input type="number" inputmode="decimal" value="${budgets[c]||''}" placeholder="₹ limit" style="text-align:right;" onchange="budgets['${c}']=+this.value;lsSave();gsQueuePush();refresh();"/>
-    </div>`).join('');
+function renderBudget() {
   const mo=sMo(), cspend={};
   txns.filter(t=>t.date.slice(0,7)===mo&&t.type==='expense').forEach(t=>{cspend[t.category]=(cspend[t.category]||0)+t.amount;});
-  if(bChart)bChart.destroy();
-  bChart=new Chart(document.getElementById('bchart'),{
+  const cats = budgetCatNames();
+  document.getElementById('budget-editor').innerHTML = cats.map(c=>{
+    const name=c.name||c, col=CC[name]||'#888', icon=CI[name]||'ti-tag';
+    const isCustom = customCats.some(x=>x.name===name);
+    return`<div class="bdr">
+      <div class="cr-ic" style="background:${col}18;color:${col};"><i class="ti ${icon}" aria-hidden="true"></i></div>
+      <span style="font-size:14px;font-weight:500;">${name}</span>
+      <input type="number" inputmode="decimal" value="${budgets[name]||''}" placeholder="₹ limit" style="text-align:right;"
+        onchange="budgets['${name}']=+this.value;lsSave();gsQueuePush();refresh();"/>
+      ${isCustom ? `<button class="btn-icon" onclick="deleteCat('${name}')" aria-label="Delete ${name}"><i class="ti ti-trash"></i></button>` : '<span></span>'}
+    </div>`;
+  }).join('');
+
+  if(bChart) bChart.destroy();
+  const allBudgetCats = budgetCatNames().map(c=>c.name||c);
+  bChart = new Chart(document.getElementById('bchart'),{
     type:'bar',
-    data:{labels:CATS,datasets:[
-      {label:'Spent',data:CATS.map(c=>Math.round(cspend[c]||0)),backgroundColor:CATS.map(c=>CC[c]+'cc'),borderRadius:4},
-      {label:'Budget',data:CATS.map(c=>budgets[c]||0),backgroundColor:'rgba(128,128,128,.1)',borderWidth:1.5,borderColor:CATS.map(c=>CC[c]),borderRadius:4}
-    ]},
+    data:{
+      labels: allBudgetCats,
+      datasets:[
+        {label:'Spent',  data:allBudgetCats.map(c=>Math.round(cspend[c]||0)), backgroundColor:allBudgetCats.map(c=>(CC[c]||'#888')+'cc'), borderRadius:4},
+        {label:'Budget', data:allBudgetCats.map(c=>budgets[c]||0), backgroundColor:'rgba(128,128,128,.1)', borderWidth:1.5, borderColor:allBudgetCats.map(c=>CC[c]||'#888'), borderRadius:4}
+      ]
+    },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:40,autoSkip:false}},y:{ticks:{callback:v=>'₹'+v.toLocaleString('en-IN'),font:{size:10}}}}}
   });
 }
 
+// ── Custom category UI ──
+function showAddCatForm() {
+  document.getElementById('add-cat-card').style.display='block';
+  document.getElementById('new-cat-name').value='';
+  document.getElementById('new-cat-budget').value='';
+  selectedColor = PALETTE[0]; selectedIcon = ICON_POOL[0];
+  // render swatches
+  document.getElementById('color-swatches').innerHTML = PALETTE.map(c=>
+    `<div class="swatch${c===selectedColor?' sel':''}" style="background:${c};" onclick="pickColor('${c}',this)"></div>`).join('');
+  // render icon picker
+  document.getElementById('icon-picker').innerHTML = ICON_POOL.map(ic=>
+    `<button class="btn-icon${ic===selectedIcon?' sel':''}" style="${ic===selectedIcon?'border-color:var(--blue-mid);background:var(--blue-bg);':''}" onclick="pickIcon('${ic}',this)"><i class="ti ${ic}"></i></button>`).join('');
+  document.getElementById('new-cat-name').focus();
+}
+function hideAddCatForm() { document.getElementById('add-cat-card').style.display='none'; }
+function pickColor(c, el) {
+  selectedColor=c;
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function pickIcon(ic, el) {
+  selectedIcon=ic;
+  document.querySelectorAll('#icon-picker .btn-icon').forEach(b=>{b.classList.remove('sel');b.style.borderColor='';b.style.background='';});
+  el.classList.add('sel'); el.style.borderColor='var(--blue-mid)'; el.style.background='var(--blue-bg)';
+}
+function saveNewCat() {
+  const name = document.getElementById('new-cat-name').value.trim();
+  if (!name) { toast('Enter a category name'); return; }
+  if (allCatNames().map(n=>n.toLowerCase()).includes(name.toLowerCase())) { toast('Category already exists'); return; }
+  const budget = parseFloat(document.getElementById('new-cat-budget').value) || 0;
+  customCats.push({name, color:selectedColor, icon:selectedIcon});
+  if (budget) budgets[name] = budget;
+  rebuildCatMaps();
+  populateCatSelects();
+  lsSave();
+  gsQueuePush();
+  hideAddCatForm();
+  renderBudget();
+  toast(name+' added!');
+}
+function deleteCat(name) {
+  if (!confirm(`Delete "${name}" category? Transactions in this category will stay but show as "Other".`)) return;
+  customCats = customCats.filter(c=>c.name!==name);
+  delete budgets[name];
+  txns.forEach(t=>{ if(t.category===name) t.category='Other'; });
+  rebuildCatMaps();
+  populateCatSelects();
+  lsSave();
+  gsQueuePush();
+  renderBudget();
+  refresh();
+  toast(name+' deleted');
+}
+
 // ── Calendar ──
-function calNav(d){calM+=d;if(calM>11){calM=0;calY++;}if(calM<0){calM=11;calY--;}renderCal();}
-function renderCal(){
+function calNav(d) { calM+=d; if(calM>11){calM=0;calY++;} if(calM<0){calM=11;calY--;} renderCal(); }
+function renderCal() {
   const DOWS=['Su','Mo','Tu','We','Th','Fr','Sa'];
   document.getElementById('cal-dow').innerHTML=DOWS.map(d=>`<div class="dow">${d}</div>`).join('');
   const first=new Date(calY,calM,1).getDay(), dim=new Date(calY,calM+1,0).getDate(), prev=new Date(calY,calM,0).getDate();
@@ -575,11 +645,11 @@ function renderCal(){
   const ds={};
   txns.filter(t=>t.date.startsWith(mo)).forEach(t=>{const d=t.date.split('-')[2];if(!ds[d])ds[d]={e:0,i:0};t.type==='expense'?ds[d].e+=t.amount:ds[d].i+=t.amount;});
   let cells=[];
-  for(let i=first-1;i>=0;i--)cells.push({n:prev-i,cur:false});
-  for(let d=1;d<=dim;d++)cells.push({n:d,cur:true});
-  while(cells.length%7!==0)cells.push({n:cells.length-dim-first+1,cur:false});
+  for(let i=first-1;i>=0;i--) cells.push({n:prev-i,cur:false});
+  for(let d=1;d<=dim;d++)     cells.push({n:d,cur:true});
+  while(cells.length%7!==0)   cells.push({n:cells.length-dim-first+1,cur:false});
   document.getElementById('cal-grid').innerHTML=cells.map(c=>{
-    if(!c.cur)return`<div class="cd dim" aria-hidden="true"><span>${c.n}</span></div>`;
+    if(!c.cur) return`<div class="cd dim" aria-hidden="true"><span>${c.n}</span></div>`;
     const ds2=String(c.n).padStart(2,'0'), dateStr=`${calY}-${String(calM+1).padStart(2,'0')}-${ds2}`;
     const sp=ds[ds2], isTod=dateStr===TSTR, isSel=dateStr===calSel;
     const cls=['cd',isSel?'sel':isTod?'tod':'',sp?'has':''].filter(Boolean).join(' ');
@@ -591,45 +661,45 @@ function renderCal(){
     const d=new Date(calSel+'T00:00'), dt=txns.filter(t=>t.date===calSel);
     document.getElementById('cal-p-date').textContent=d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
     const exp=dt.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-    const inc=dt.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const inc=dt.filter(t=>t.type==='income' ).reduce((s,t)=>s+t.amount,0);
     const tot=document.getElementById('cal-p-total');
     if(dt.length){tot.textContent=(exp?'−'+fmt(exp):'')+(exp&&inc?' · ':'')+(inc?'+'+fmt(inc):'');tot.style.color=exp?'var(--red-mid)':'var(--green-mid)';}
     else{tot.textContent='No transactions';tot.style.color='var(--text3)';}
     document.getElementById('cal-p-txns').innerHTML=dt.length?dt.map(txRow).join(''):`<div style="font-size:13px;color:var(--text3);padding:4px 0;">Tap below to add for this date</div>`;
     panel.style.display='block';
-  }else panel.style.display='none';
+  } else panel.style.display='none';
 }
-function addForDate(){document.getElementById('q-date').value=calSel;go('add',1);setTimeout(()=>document.getElementById('q-desc').focus(),100);}
+function addForDate() { document.getElementById('q-date').value=calSel; go('add',1); setTimeout(()=>document.getElementById('q-desc').focus(),100); }
 
 // ── Transactions ──
 let _uid=Date.now();
 function addTxn(desc,amount,category,type,date){
   const t={id:(++_uid).toString(),desc,amount:Math.abs(+amount),category,type,date:date||TSTR};
-  txns.push(t);lsSave();refresh();renderCal();gsQueuePush();
+  txns.push(t); lsSave(); refresh(); renderCal(); gsQueuePush();
 }
-function delTxn(id){txns=txns.filter(t=>t.id!==id);lsSave();refresh();renderCal();gsQueuePush();toast('Deleted');}
+function delTxn(id){ txns=txns.filter(t=>t.id!==id); lsSave(); refresh(); renderCal(); gsQueuePush(); toast('Deleted'); }
 
 function quickAdd(){
   const desc=document.getElementById('q-desc').value.trim(), amt=parseFloat(document.getElementById('q-amt').value);
   if(!desc||!amt||isNaN(amt)){toast('Enter a description and amount');return;}
   addTxn(desc,amt,document.getElementById('q-cat').value,document.getElementById('q-type').value,document.getElementById('q-date').value||TSTR);
-  document.getElementById('q-desc').value='';document.getElementById('q-amt').value='';
-  toast('Added! ✓');go('dash',0);
+  document.getElementById('q-desc').value=''; document.getElementById('q-amt').value='';
+  toast('Added! ✓'); go('dash',0);
 }
 
 // ── AI ──
 const AH={'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
-
 async function parseNL(){
   const raw=document.getElementById('nl-input').value.trim();
   if(!raw){toast('Type something first');return;}
-  const btn=document.getElementById('nl-btn'),res=document.getElementById('nl-res');
-  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Parsing…';
+  const btn=document.getElementById('nl-btn'), res=document.getElementById('nl-res');
+  btn.disabled=true; btn.innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Parsing…';
   res.textContent='';
   try{
+    const validCats=allCatNames().join('|');
     const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:AH,body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:700,
-      system:`Parse natural language expense/income. Today is ${TSTR}. Return ONLY a JSON array, no markdown. Each: {desc,amount(positive),category(Food|Housing|Transport|Health|Entertainment|Shopping|Education|Utilities|Income|Other),type("expense"|"income"),date(YYYY-MM-DD)}.`,
+      system:`Parse natural language expense/income. Today is ${TSTR}. Return ONLY a JSON array, no markdown. Each: {desc,amount(positive),category(one of:${validCats}),type("expense"|"income"),date(YYYY-MM-DD)}.`,
       messages:[{role:'user',content:raw}]
     })});
     const data=await r.json();
@@ -641,35 +711,33 @@ async function parseNL(){
   }catch(e){res.textContent='Could not parse. Use the quick-add form.';}
   finally{btn.disabled=false;btn.innerHTML='<i class="ti ti-sparkles"></i>Parse &amp; add with AI';}
 }
-
 function bulkAdd(){
-  const raw=document.getElementById('bulk-input').value.trim();if(!raw){toast('Paste some data first');return;}
+  const raw=document.getElementById('bulk-input').value.trim(); if(!raw){toast('Paste data first');return;}
   let count=0;
   raw.split('\n').filter(l=>l.trim()).forEach(line=>{
-    const c=line.split(',').map(x=>x.trim());if(c.length<3)return;
-    const amt=parseFloat(c[2]);if(!amt||!c[1])return;
-    addTxn(c[1],amt,c[4]||'Other',(c[3]||'expense').toLowerCase().includes('inc')?'income':'expense',c[0]||TSTR);count++;
+    const c=line.split(',').map(x=>x.trim()); if(c.length<3)return;
+    const amt=parseFloat(c[2]); if(!amt||!c[1])return;
+    addTxn(c[1],amt,c[4]||'Other',(c[3]||'expense').toLowerCase().includes('inc')?'income':'expense',c[0]||TSTR); count++;
   });
   document.getElementById('bulk-res').textContent=count+' transactions imported.';
-  document.getElementById('bulk-input').value='';toast(count+' imported! ✓');
+  document.getElementById('bulk-input').value=''; toast(count+' imported! ✓');
 }
-
 async function askAI(q){
   if(!q.trim()){toast('Type a question first');return;}
-  const el=document.getElementById('ai-out');el.innerHTML='<span style="color:var(--text3);">Thinking…</span>';
+  const el=document.getElementById('ai-out'); el.innerHTML='<span style="color:var(--text3);">Thinking…</span>';
   document.getElementById('ai-q').value='';
-  const mo=sMo(),mT=txns.filter(t=>t.date.slice(0,7)===mo);
+  const mo=sMo(), mT=txns.filter(t=>t.date.slice(0,7)===mo);
   const mS=mT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const mI=mT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const cs={};mT.filter(t=>t.type==='expense').forEach(t=>{cs[t.category]=(cs[t.category]||0)+t.amount;});
+  const mI=mT.filter(t=>t.type==='income' ).reduce((s,t)=>s+t.amount,0);
+  const cs={}; mT.filter(t=>t.type==='expense').forEach(t=>{cs[t.category]=(cs[t.category]||0)+t.amount;});
   const ctx=`Personal finance advisor for Indian user. Month:${mo}. Income:₹${mI}, Expenses:₹${mS}, Net:₹${mI-mS}. Category spend:${Object.entries(cs).map(([k,v])=>k+'₹'+Math.round(v)).join(',')||'none'}. Budgets:${Object.entries(budgets).map(([k,v])=>k+'₹'+v).join(',')}. Recent:${mT.slice(-10).map(t=>t.date+' '+t.desc+' '+t.type+' ₹'+t.amount).join(';')||'none'}. Give 3-5 bullet points, practical, use ₹.`;
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:AH,body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,system:ctx,messages:[{role:'user',content:q}]})});
     const data=await r.json();
     el.innerHTML=(data.content?.find(b=>b.type==='text')?.text||'No response.').replace(/\n/g,'<br>');
-  }catch(e){el.innerHTML='<span style="color:var(--red-mid);">Could not reach AI. Please make sure you are logged in to claude.ai and try again.</span>';}
+  }catch(e){el.innerHTML='<span style="color:var(--red-mid);">Could not reach AI. Make sure you are logged in to claude.ai.</span>';}
 }
-function doAsk(){askAI(document.getElementById('ai-q').value);}
+function doAsk(){ askAI(document.getElementById('ai-q').value); }
 
 // ── Export ──
 function exportData(){
@@ -678,24 +746,29 @@ function exportData(){
   if(!rows.length){toast('No data to export');return;}
   const fname='money-manager-'+(scope==='month'?mo:TSTR);
   const data=rows.map(t=>({Date:t.date,Description:t.desc,Amount:t.amount,Type:t.type.charAt(0).toUpperCase()+t.type.slice(1),Category:t.category}));
+  const allBC=budgetCatNames().map(c=>c.name||c);
   if(fmt2==='csv'){
-    const csv='Date,Description,Amount,Type,Category\n'+data.map(r=>`${r.Date},"${r.Description}",${r.Amount},${r.Type},${r.Category}`).join('\n');
-    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=fname+'.csv';a.click();
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['Date,Description,Amount,Type,Category\n'+data.map(r=>`${r.Date},"${r.Description}",${r.Amount},${r.Type},${r.Category}`).join('\n')],{type:'text/csv'}));
+    a.download=fname+'.csv'; a.click();
   }else{
     const wb=XLSX.utils.book_new();
-    const ws=XLSX.utils.json_to_sheet(data);ws['!cols']=[{wch:12},{wch:32},{wch:10},{wch:10},{wch:14}];
-    const sum=[['Summary',''],['Exported',new Date().toLocaleDateString('en-IN')],[''],['Total income',`=SUMIF(Transactions!D:D,"Income",Transactions!C:C)`],['Total expenses',`=SUMIF(Transactions!D:D,"Expense",Transactions!C:C)`],['Net','=B4-B5'],[''],...CATS.map(c=>[c,`=SUMIFS(Transactions!C:C,Transactions!E:E,"${c}",Transactions!D:D,"Expense")`])];
-    const ws2=XLSX.utils.aoa_to_sheet(sum);ws2['!cols']=[{wch:16},{wch:14}];
-    XLSX.utils.book_append_sheet(wb,ws,'Transactions');XLSX.utils.book_append_sheet(wb,ws2,'Summary');
+    const ws=XLSX.utils.json_to_sheet(data); ws['!cols']=[{wch:12},{wch:32},{wch:10},{wch:10},{wch:14}];
+    const sum=[['Summary',''],['Exported',new Date().toLocaleDateString('en-IN')],[''],
+      ['Total income', `=SUMIF(Transactions!D:D,"Income",Transactions!C:C)`],
+      ['Total expenses',`=SUMIF(Transactions!D:D,"Expense",Transactions!C:C)`],
+      ['Net','=B4-B5'],[''],...allBC.map(c=>[c,`=SUMIFS(Transactions!C:C,Transactions!E:E,"${c}",Transactions!D:D,"Expense")`])];
+    const ws2=XLSX.utils.aoa_to_sheet(sum); ws2['!cols']=[{wch:16},{wch:14}];
+    XLSX.utils.book_append_sheet(wb,ws,'Transactions'); XLSX.utils.book_append_sheet(wb,ws2,'Summary');
     XLSX.writeFile(wb,fname+'.xlsx');
   }
-  toast('Downloaded! ✓');recordBackup();
+  toast('Downloaded! ✓'); recordBackup();
 }
 
 // ── Import ──
 function importFile(inp){
-  const file=inp.files[0];if(!file)return;
-  const res=document.getElementById('imp-res');res.textContent='Reading…';
+  const file=inp.files[0]; if(!file)return;
+  const res=document.getElementById('imp-res'); res.textContent='Reading…';
   const reader=new FileReader();
   reader.onload=e=>{
     try{
@@ -707,13 +780,13 @@ function importFile(inp){
         const[iD,iN,iA,iT,iC]=[gi('date'),gi('desc'),Math.max(gi('amount'),gi('amt')),gi('type'),gi('cat')];
         for(let i=1;i<lines.length;i++){
           const c=lines[i].split(',').map(x=>x.replace(/^"|"$/g,'').trim());
-          const amt=parseFloat(iA>=0?c[iA]:c[2]);if(!amt)continue;
+          const amt=parseFloat(iA>=0?c[iA]:c[2]); if(!amt)continue;
           rows.push({date:iD>=0?c[iD]:TSTR,desc:iN>=0?c[iN]:c[1]||'Entry',amount:amt,type:(iT>=0?c[iT]:'expense').toLowerCase().includes('inc')?'income':'expense',category:iC>=0?c[iC]:'Other'});
         }
       }else{
         const wb=XLSX.read(e.target.result,{type:'array'});
         XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''}).forEach(r=>{
-          const amt=Math.abs(parseFloat(r.Amount||r.amount||0));if(!amt)return;
+          const amt=Math.abs(parseFloat(r.Amount||r.amount||0)); if(!amt)return;
           rows.push({date:String(r.Date||r.date||TSTR),desc:String(r.Description||r.description||'Entry'),amount:amt,type:String(r.Type||r.type||'expense').toLowerCase().includes('inc')?'income':'expense',category:String(r.Category||r.category||'Other')});
         });
       }
@@ -721,18 +794,18 @@ function importFile(inp){
       let added=0,skip=0;
       rows.forEach(r=>{const k=r.date+'|'+r.desc+'|'+r.amount;if(existing.has(k)){skip++;return;}addTxn(r.desc,r.amount,r.category,r.type,r.date);existing.add(k);added++;});
       res.innerHTML=`<span style="color:var(--green-mid);font-weight:600;">${added} imported</span>${skip?' · '+skip+' duplicates skipped':''}`;
-      toast(added+' imported! ✓');inp.value='';
-    }catch(e){res.textContent='Error reading file. Expected columns: Date, Description, Amount, Type, Category.';}
+      toast(added+' imported! ✓'); inp.value='';
+    }catch(e){res.textContent='Error reading file.';}
   };
-  file.name.endsWith('.csv')?reader.readAsText(file):reader.readAsArrayBuffer(file);
+  file.name.endsWith('.csv') ? reader.readAsText(file) : reader.readAsArrayBuffer(file);
 }
 
 // ── Backup ──
 function toggleAutoBackup(){autoBackup=!autoBackup;localStorage.setItem('mm_autobackup',JSON.stringify(autoBackup));document.getElementById('auto-tog').classList.toggle('on',autoBackup);toast(autoBackup?'Reminder on':'Reminder off');}
 function recordBackup(){
   const log=JSON.parse(localStorage.getItem('mm_bklog')||'[]');
-  log.unshift({time:new Date().toISOString(),count:txns.length});if(log.length>10)log.pop();
-  localStorage.setItem('mm_bklog',JSON.stringify(log));localStorage.setItem('mm_lastbk',new Date().toISOString());
+  log.unshift({time:new Date().toISOString(),count:txns.length}); if(log.length>10)log.pop();
+  localStorage.setItem('mm_bklog',JSON.stringify(log)); localStorage.setItem('mm_lastbk',new Date().toISOString());
   renderBackup();
 }
 function renderBackup(){
@@ -745,30 +818,17 @@ function renderBackup(){
 function checkAutoBackup(){
   if(!autoBackup)return;
   const last=localStorage.getItem('mm_lastbk');
-  if(last&&(Date.now()-new Date(last).getTime())/(36e5)>=20)setTimeout(()=>{if(confirm('Daily backup reminder — download your backup now?'))exportData();},1500);
+  if(last&&(Date.now()-new Date(last).getTime())/(36e5)>=20)setTimeout(()=>{if(confirm('Daily backup reminder — download backup now?'))exportData();},1500);
 }
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 // GOOGLE SIGN-IN + PER-USER SHEETS SYNC
-//
-// How multi-user works:
-// ┌─────────────┐   signs in   ┌──────────────────┐
-// │  User A     │ ──────────►  │ User A's Drive   │
-// │  (anyone)   │              │ "Money Manager"  │
-// └─────────────┘              │ Sheet — private  │
-//                              └──────────────────┘
-// ┌─────────────┐   signs in   ┌──────────────────┐
-// │  User B     │ ──────────►  │ User B's Drive   │
-// │  (anyone)   │              │ "Money Manager"  │
-// └─────────────┘              │ Sheet — private  │
-//                              └──────────────────┘
-// You (app owner) → NO access to either Sheet.
-// localStorage is keyed by email so same device, different users = different data.
-// ════════════════════════════════════════════════════════
+// FIX: Persistent session using stored user info +
+//      proper silent token refresh with retry logic
+// ════════════════════════════════════════════════
 
 function updateAuthCard(user){
   const card=document.getElementById('auth-card');
-  const isConfigured = !!GSHEETS_CLIENT_ID;
   if(user){
     const ph=user.photo?`<img src="${user.photo}" class="av" alt=""/>`:`<div class="av-ph"><i class="ti ti-user" aria-hidden="true"></i></div>`;
     card.innerHTML=`${ph}
@@ -788,51 +848,86 @@ function updateAuthCard(user){
         <div class="au-email">Data saved locally only</div>
         <div class="au-status local">No cloud sync</div>
       </div>
-      ${isConfigured?`<button class="btn btn-g btn-sm" onclick="gsSignIn()" style="gap:6px;"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="Google"/>Sign in</button>`:'<span style="font-size:11px;color:var(--text3);">Setup needed</span>'}`;
+      <button class="btn btn-g btn-sm" onclick="gsSignIn()" style="gap:6px;">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="Google"/>Sign in
+      </button>`;
     document.getElementById('sheet-row').style.display='none';
-    document.getElementById('sync-banner').style.display=isConfigured?'flex':'none';
+    document.getElementById('sync-banner').style.display='flex';
     setSyncInd('local');
   }
 }
 
 async function gsReq(url,opts={}){
+  if(!gsUser?.accessToken) throw new Error('No token');
   const res=await fetch(url,{...opts,headers:{'Authorization':'Bearer '+gsUser.accessToken,'Content-Type':'application/json',...(opts.headers||{})}});
-  if(res.status===401){toast('Session expired — please sign in again');gsSignOut();throw new Error('401');}
-  if(!res.ok)throw new Error(await res.text());
+  if(res.status===401){
+    // Try one silent refresh before giving up
+    const refreshed = await gsSilentRefresh();
+    if(!refreshed) { toast('Session expired — please sign in again'); gsSignOut(); throw new Error('401'); }
+    // Retry with new token
+    const res2=await fetch(url,{...opts,headers:{'Authorization':'Bearer '+gsUser.accessToken,'Content-Type':'application/json',...(opts.headers||{})}});
+    if(!res2.ok) throw new Error(await res2.text());
+    return res2.json();
+  }
+  if(!res.ok) throw new Error(await res.text());
   return res.json();
 }
 
+// ── FIX: silent refresh returns a Promise<boolean> ──
+function gsSilentRefresh() {
+  return new Promise(resolve => {
+    if (!GSHEETS_CLIENT_ID) { resolve(false); return; }
+    try {
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: GSHEETS_CLIENT_ID,
+        scope: GSHEETS_SCOPE,
+        prompt: '',
+        callback: resp => {
+          if (resp.error || !resp.access_token) { resolve(false); return; }
+          gsUser.accessToken = resp.access_token;
+          localStorage.setItem('mm_gs_token', resp.access_token);
+          // Schedule next refresh in 50 minutes (token lasts 60 min)
+          clearTimeout(tokenRefreshTimer);
+          tokenRefreshTimer = setTimeout(() => gsSilentRefresh(), 50*60*1000);
+          resolve(true);
+        }
+      });
+      client.requestAccessToken({ prompt: '' });
+    } catch(e) { resolve(false); }
+  });
+}
+
 async function gsEnsureSheet(){
-  if(!gsUser)return;
+  if(!gsUser) return;
   const cached=localStorage.getItem(`mm_${gsUser.email}_sheetId`);
-  if(cached){gsSheetId=cached;document.getElementById('sheet-link').href=`https://docs.google.com/spreadsheets/d/${cached}`;return;}
+  if(cached){ gsSheetId=cached; document.getElementById('sheet-link').href=`https://docs.google.com/spreadsheets/d/${cached}`; return; }
   const q=encodeURIComponent(`name='Money Manager' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false`);
   const list=await gsReq(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`);
-  if(list.files?.length){gsSheetId=list.files[0].id;}
+  if(list.files?.length){ gsSheetId=list.files[0].id; }
   else{
     const c=await gsReq('https://sheets.googleapis.com/v4/spreadsheets',{method:'POST',body:JSON.stringify({properties:{title:'Money Manager'},sheets:[{properties:{title:'Transactions'}},{properties:{title:'Budgets'}}]})});
     gsSheetId=c.spreadsheetId;
     await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Transactions!A1:E1?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values:[['Date','Description','Amount','Type','Category']]})});
     await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Budgets!A1:B1?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values:[['Category','Budget']]})});
   }
-  localStorage.setItem(`mm_${gsUser.email}_sheetId`,gsSheetId);
+  localStorage.setItem(`mm_${gsUser.email}_sheetId`, gsSheetId);
   document.getElementById('sheet-link').href=`https://docs.google.com/spreadsheets/d/${gsSheetId}`;
 }
 
 async function gsPull(){
-  if(!gsUser||!gsSheetId)return;
+  if(!gsUser||!gsSheetId) return;
   setSyncInd('busy');
   try{
     const rows=await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Transactions!A2:E`);
-    if(rows.values?.length){let u=Date.now();txns=rows.values.filter(r=>r[2]&&+r[2]>0).map(r=>({id:(++u).toString(),date:r[0]||TSTR,desc:r[1]||'',amount:Math.abs(+r[2]),type:(r[3]||'expense').toLowerCase(),category:r[4]||'Other'}));}
+    if(rows.values?.length){ let u=Date.now(); txns=rows.values.filter(r=>r[2]&&+r[2]>0).map(r=>({id:(++u).toString(),date:r[0]||TSTR,desc:r[1]||'',amount:Math.abs(+r[2]),type:(r[3]||'expense').toLowerCase(),category:r[4]||'Other'})); }
     const br=await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Budgets!A2:B`);
-    if(br.values?.length)br.values.forEach(r=>{if(r[0]&&r[1])budgets[r[0]]=+r[1]||0;});
-    lsSave();refresh();renderCal();setSyncInd('live');
-  }catch(e){console.warn('Pull failed',e);setSyncInd('local');}
+    if(br.values?.length) br.values.forEach(r=>{ if(r[0]&&r[1]) budgets[r[0]]=+r[1]||0; });
+    lsSave(); refresh(); renderCal(); setSyncInd('live');
+  }catch(e){ console.warn('Pull failed',e); setSyncInd('local'); }
 }
 
 async function gsPushAll(){
-  if(!gsUser||!gsSheetId)return;
+  if(!gsUser||!gsSheetId) return;
   setSyncInd('busy');
   try{
     const rows=txns.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(t=>[t.date,t.desc,t.amount,t.type,t.category]);
@@ -840,24 +935,27 @@ async function gsPushAll(){
     const br=Object.entries(budgets).map(([k,v])=>[k,v]);
     await gsReq(`https://sheets.googleapis.com/v4/spreadsheets/${gsSheetId}/values/Budgets!A1?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values:[['Category','Budget'],...br]})});
     setSyncInd('live');
-  }catch(e){console.warn('Push failed',e);toast('Sync error — data saved locally');setSyncInd('local');}
+  }catch(e){ console.warn('Push failed',e); toast('Sync error — saved locally'); setSyncInd('local'); }
 }
 
-function gsQueuePush(){if(!gsUser||!gsSheetId)return;clearTimeout(gsPushTimer);gsPushTimer=setTimeout(gsPushAll,1800);}
+function gsQueuePush(){ if(!gsUser||!gsSheetId)return; clearTimeout(gsPushTimer); gsPushTimer=setTimeout(gsPushAll,1800); }
 
 function gsSignIn(){
-  if(!GSHEETS_CLIENT_ID){go('backup',6);toast('Add your Client ID first — see setup card',3500);return;}
   const client=google.accounts.oauth2.initTokenClient({
-    client_id:GSHEETS_CLIENT_ID,scope:GSHEETS_SCOPE,
-    callback:async resp=>{
-      if(resp.error){toast('Sign in failed: '+resp.error);return;}
+    client_id:GSHEETS_CLIENT_ID, scope:GSHEETS_SCOPE,
+    callback: async resp => {
+      if(resp.error){ toast('Sign in failed: '+resp.error); return; }
       const profile=await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+resp.access_token}}).then(r=>r.json());
       gsUser={name:profile.name,email:profile.email,photo:profile.picture,accessToken:resp.access_token};
-      localStorage.setItem('mm_gs_user',JSON.stringify({name:gsUser.name,email:gsUser.email,photo:gsUser.photo}));
-      localStorage.setItem('mm_gs_token',resp.access_token);
-      lsLoad(); // load this user's local cache
+      // ── FIX: persist user info AND token ──
+      localStorage.setItem('mm_gs_user',  JSON.stringify({name:gsUser.name,email:gsUser.email,photo:gsUser.photo}));
+      localStorage.setItem('mm_gs_token', resp.access_token);
+      // Schedule next silent refresh in 50 min
+      clearTimeout(tokenRefreshTimer);
+      tokenRefreshTimer=setTimeout(()=>gsSilentRefresh(),50*60*1000);
+      lsLoad();
       updateAuthCard(gsUser);
-      refresh();renderCal();
+      refresh(); renderCal();
       await gsEnsureSheet();
       await gsPull();
       toast('Signed in — syncing your Sheet ✓');
@@ -867,45 +965,90 @@ function gsSignIn(){
 }
 
 function gsSignOut(){
-  if(gsUser){try{google.accounts.oauth2.revoke(gsUser.accessToken,()=>{});}catch(e){}localStorage.removeItem('mm_gs_user');localStorage.removeItem('mm_gs_token');gsUser=null;gsSheetId=null;}
-  lsLoad(); // restore anonymous local data
-  updateAuthCard(null);refresh();renderCal();toast('Signed out');
+  clearTimeout(tokenRefreshTimer);
+  if(gsUser){ try{google.accounts.oauth2.revoke(gsUser.accessToken,()=>{});}catch(e){} localStorage.removeItem('mm_gs_user'); localStorage.removeItem('mm_gs_token'); gsUser=null; gsSheetId=null; }
+  lsLoad();
+  updateAuthCard(null); refresh(); renderCal(); toast('Signed out');
 }
 
-function gsRestoreSession(){
-  const stored = localStorage.getItem('mm_gs_user');
-  if(!stored){
-  updateAuthCard(null);
-  return;
-}
+// ── FIX: Proper session restore ──
+// Shows user as signed in immediately from stored info,
+// then silently gets a fresh token in background.
+// If silent refresh fails → keep showing as signed in
+// but with "local only" sync indicator, not signed out.
+async function gsRestoreSession(){
+  if(isRestoringSession) return;
+  isRestoringSession=true;
+  const stored=localStorage.getItem('mm_gs_user');
+  if(!stored){ updateAuthCard(null); isRestoringSession=false; return; }
 
-gsUser = {
-  ...JSON.parse(stored),
-  accessToken: null
-};
-  const sid=localStorage.getItem(`mm_${gsUser.email}_sheetId`);if(sid)gsSheetId=sid;
-  lsLoad(); // load this user's local cache while we refresh token
-  updateAuthCard(gsUser);refresh();renderCal();
-  if(!GSHEETS_CLIENT_ID) return;
-  try{
-    const client=google.accounts.oauth2.initTokenClient({
-      client_id:GSHEETS_CLIENT_ID,scope:GSHEETS_SCOPE,prompt:'',
-      callback:async resp=>{if(resp.error||!resp.access_token)return;gsUser.accessToken=resp.access_token;localStorage.setItem('mm_gs_token',resp.access_token);await gsEnsureSheet();await gsPull();}
-    });
-    client.requestAccessToken({prompt:''});
-  }catch(e){console.warn('Silent token refresh failed',e);}
+  // Show user as signed in immediately (good UX)
+  gsUser={...JSON.parse(stored), accessToken:null};
+  const sid=localStorage.getItem(`mm_${gsUser.email}_sheetId`);
+  if(sid) gsSheetId=sid;
+  lsLoad();
+  updateAuthCard(gsUser); // shows name/photo right away
+  setSyncInd('busy');
+  refresh(); renderCal();
+
+  // Get fresh token silently
+  const ok=await gsSilentRefresh();
+  if(ok){
+    // Token refreshed — pull latest from Sheet
+    try{
+      await gsEnsureSheet();
+      await gsPull();
+    }catch(e){
+      setSyncInd('local');
+      console.warn('Post-restore pull failed',e);
+    }
+  }else{
+    // Silent refresh failed (e.g. first load, cookies cleared)
+    // Show as signed in with local data — don't sign out
+    setSyncInd('local');
+    // Show a non-intrusive re-auth prompt in the sync tab
+    document.getElementById('sheet-row').style.display='none';
+    const sr=document.getElementById('sheet-row');
+    // Insert a gentle re-auth card after auth-card
+    const reauth=document.createElement('div');
+    reauth.className='banner';
+    reauth.style.cssText='display:flex;margin-bottom:12px;';
+    reauth.innerHTML=`<i class="ti ti-refresh" style="color:var(--amber);font-size:20px;flex-shrink:0;"></i><span class="banner-text" style="color:var(--text);">Tap to reconnect sync</span><button class="bnr-btn" onclick="gsSignIn();this.closest('.banner').remove()">Reconnect</button>`;
+    const ac=document.getElementById('auth-card');
+    if(ac && ac.parentNode && !document.getElementById('reauth-banner')){
+      reauth.id='reauth-banner';
+      ac.parentNode.insertBefore(reauth,ac.nextSibling);
+    }
+  }
+  isRestoringSession=false;
 }
 
 // ── Boot ──
 (function boot(){
   autoBackup=JSON.parse(localStorage.getItem('mm_autobackup')||'false');
-  if(GSHEETS_CLIENT_ID){const sc=document.getElementById('setup-card');if(sc)sc.style.display='none';}
+  if(GSHEETS_CLIENT_ID){ const sc=document.getElementById('setup-card'); if(sc) sc.style.display='none'; }
   lsLoad();
   document.getElementById('q-date').value=TSTR;
-  updateAuthCard(null);setSyncInd('local');
-  refresh();renderCal();checkAutoBackup();
-  if(typeof google!=='undefined'&&google?.accounts)gsRestoreSession();
-  else{const s=document.querySelector('script[src*="gsi/client"]');if(s)s.addEventListener('load',gsRestoreSession);}
+  rebuildCatMaps();
+  populateCatSelects();
+  updateAuthCard(null);
+  setSyncInd('local');
+  refresh(); renderCal(); checkAutoBackup();
+  // Restore session once GSI script loads
+  if(typeof google!=='undefined'&&google?.accounts){
+    gsRestoreSession();
+  }else{
+    const gsiScript=document.querySelector('script[src*="gsi/client"]');
+    if(gsiScript) gsiScript.addEventListener('load',gsRestoreSession);
+    else window.addEventListener('load',()=>{
+      // Fallback: poll for google object
+      let tries=0;
+      const poll=setInterval(()=>{
+        if(typeof google!=='undefined'&&google?.accounts){ clearInterval(poll); gsRestoreSession(); }
+        if(++tries>20) clearInterval(poll);
+      },300);
+    });
+  }
 })();
 </script>
 </body>
